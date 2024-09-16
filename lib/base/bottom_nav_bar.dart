@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:weather_flutter_front/screens/home_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -20,9 +21,9 @@ class BottomNavBarContainer extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBarContainer> {
-  // bottom 메뉴 리스트
+  // 하단 메뉴 리스트
   final appScreens = [
-    const Center(child: Text('Home')),
+    const HomeScreen(), // 홈 스크린
     const Center(child: Text('Bookmark')),
     const Center(child: Text('Profile')),
   ];
@@ -30,7 +31,7 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   // 선택 인덱스 초기화
   int _selectedIndex = 0;
 
-  // bottom 메뉴 버튼 변경
+  // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {
     // setState => 실시간으로 변경
     setState(() {
@@ -41,9 +42,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text('My Tickets')),
-        ),
         body: appScreens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: _selectedIndex,
