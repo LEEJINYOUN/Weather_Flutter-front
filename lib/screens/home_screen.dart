@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:weather/weather.dart';
@@ -15,13 +16,16 @@ class _HomeScreenState extends State<HomeScreen> {
   // 날씨 api 설정
   final WeatherFactory _wf = WeatherFactory(apiKey, language: Language.KOREAN);
 
+  final TextEditingController _inputController = TextEditingController();
+  String inputText = '';
+
   Weather? _weather;
 
   @override
   // 날씨 정보 가져오기
   void initState() {
     super.initState();
-    _wf.currentWeatherByCityName("Daegu").then((w) {
+    _wf.currentWeatherByCityName('Daegu').then((w) {
       setState(() {
         _weather = w;
       });
@@ -32,15 +36,43 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (_weather == null) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Text('검색하세요.'),
       );
     }
     return ListView(
       children: [
         // 공백
         const SizedBox(height: 40),
-
         // 상단 컨테이너
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: TextField(
+                controller: _inputController,
+                onChanged: (text) {
+                  setState(() {
+                    inputText = text;
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: '지역 검색',
+                ),
+              ),
+            )),
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                inputText = _inputController.text;
+              });
+            },
+            child: const Text('검색')),
+
+        Text(_inputController.text),
+        // 공백
+        const SizedBox(height: 40),
+
+        // 중단 컨테이너
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -110,6 +142,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+
+        // 공백
+        const SizedBox(height: 40),
       ],
     );
   }
