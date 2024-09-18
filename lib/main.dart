@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/base/bottom_nav_bar.dart';
+import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
 
 void main() {
   runApp(const MyApp());
