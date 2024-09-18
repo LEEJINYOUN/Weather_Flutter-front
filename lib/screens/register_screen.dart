@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
+import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 
@@ -40,12 +41,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       isLoading = true;
     });
 
-    if (emailController.text != '' &&
-        nameController.text != '' &&
-        passwordController.text != '') {
-      dataPrint(emailController.text);
-      dataPrint(nameController.text);
-      dataPrint(passwordController.text);
+    String result = await AuthMethod().register(
+        email: emailController.text,
+        name: nameController.text,
+        password: passwordController.text);
+
+    if (result == "success") {
+      setState(() {
+        isLoading = false;
+      });
+      dataPrint('로그인 성공!');
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      dataPrint(result);
     }
   }
 

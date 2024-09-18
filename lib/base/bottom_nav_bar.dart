@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
+import 'package:weather_flutter_front/screens/login_screen.dart';
+import 'package:weather_flutter_front/screens/register_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
 
+  // BottomNavBarContainer 불러오기
   @override
   Widget build(BuildContext context) {
-    // BottomNavBarContainer 불러오기
     return const MaterialApp(home: BottomNavBarContainer());
   }
 }
@@ -15,8 +17,8 @@ class BottomNavBar extends StatelessWidget {
 class BottomNavBarContainer extends StatefulWidget {
   const BottomNavBarContainer({super.key});
 
-  @override
   // _BottomNavBarState 불러오기 => state 생성 후 반환
+  @override
   State<BottomNavBarContainer> createState() => _BottomNavBarState();
 }
 
@@ -26,10 +28,12 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
     const HomeScreen(), // 홈 스크린
     const Center(child: Text('Bookmark')),
     const Center(child: Text('Profile')),
+    const LoginScreen(),
+    const RegisterScreen(),
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 0;
+  int _selectedIndex = 3;
 
   // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {
@@ -62,6 +66,18 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
                   activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
                   label: 'Profile'),
+              BottomNavigationBarItem(
+                  icon:
+                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
+                  activeIcon:
+                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
+                  label: 'Login'),
+              BottomNavigationBarItem(
+                  icon:
+                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
+                  activeIcon:
+                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
+                  label: 'Register'),
             ]));
   }
 }

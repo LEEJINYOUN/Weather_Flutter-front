@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/base/bottom_nav_bar.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_flutter_front/screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +13,6 @@ class MyApp extends StatelessWidget {
     // BottomNavBar 불러오기
     return const MaterialApp(
         debugShowCheckedModeBanner: false, // 디버그 배너 삭제
-        home: LoginScreen()); // 기본 화면
+        home: BottomNavBar()); // 기본 화면
   }
 }
