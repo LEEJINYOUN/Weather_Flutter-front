@@ -1,16 +1,37 @@
-# weather_flutter_front
+# 날씨 앱
 
-A new Flutter project.
+<h2> 📃 개요 </h2>
 
-## Getting Started
+- <h3>Flutter, Nest Js 학습용으로 제작중인 앱</h3>
+- <h3>기존 자바스크립트로 제작한 웹사이트를 앱으로 제작</h3>
+- <h3>검색한 지역의 현재 날씨를 확인하고, 옷 추천해주는 서비스</h3>
+  <br/><br/>
 
-This project is a starting point for a Flutter application.
+<h2> 🛠 사용 기술 </h2>
 
-A few resources to get you started if this is your first Flutter project:
+- <h3>Flutter</h3>
+- <h3>Nest Js</h3>
+- <h3>Mysql</h3>
+- <h3>OpenWeatherMap API</h3>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+  <br/><br/>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<h2> ⚙️ 구현 완료 </h2>
+
+- <h3>검색한 지역의 현재 날씨를 확인 (24.09.19)</h3>
+  <br/><br/>
+
+<h2> ⚙️ 구현 미완료</h2>
+
+- <h3>기온별로 옷 추천</h3>
+- <h3>회원가입, 로그인</h3>
+- <h3>검색한 지역 즐겨찾기</h3>
+  <br/><br/>
+
+<h2> 🎥 구현 화면 </h2>
+
+## 검색한 지역의 날씨 확인
+
+![캡처](/assets/images/weather-app.png)
+
+---
