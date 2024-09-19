@@ -29,7 +29,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
     const Center(child: Text('Bookmark')),
     const Center(child: Text('Profile')),
     const LoginScreen(),
-    const RegisterScreen(),
   ];
 
   // 선택 인덱스 초기화
@@ -72,12 +71,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   activeIcon:
                       Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
                   label: 'Login'),
-              BottomNavigationBarItem(
-                  icon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
-                  activeIcon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
-                  label: 'Register'),
             ]));
   }
 }
