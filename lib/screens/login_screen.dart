@@ -73,18 +73,23 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(top: 20, bottom: 20),
               padding: const EdgeInsets.only(top: 20, bottom: 20),
             ),
-            TextFieldInput(
-                icon: Icons.email,
-                textEditingController: emailController,
-                hintText: '이메일',
-                textInputType: TextInputType.text),
-            TextFieldInput(
-              icon: Icons.lock,
-              textEditingController: passwordController,
-              hintText: '비밀번호',
-              textInputType: TextInputType.text,
-              isPass: true,
-            ),
+            Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: TextFieldInput(
+                    textEditingController: emailController,
+                    hintText: '이메일',
+                    textInputType: TextInputType.text,
+                    prefixIcon: Icons.email)),
+            Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: TextFieldInput(
+                    textEditingController: passwordController,
+                    hintText: '비밀번호',
+                    textInputType: TextInputType.text,
+                    prefixIcon: Icons.lock,
+                    isPass: true)),
             BlueButton(onTap: loginSubmit, text: "로그인"),
             Padding(
               padding: const EdgeInsets.only(top: 10),

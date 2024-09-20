@@ -78,23 +78,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
             margin: const EdgeInsets.only(top: 20, bottom: 20),
             padding: const EdgeInsets.only(top: 20, bottom: 20),
           ),
-          TextFieldInput(
-              icon: Icons.email,
-              textEditingController: emailController,
-              hintText: '이메일',
-              textInputType: TextInputType.text),
-          TextFieldInput(
-              icon: Icons.person,
-              textEditingController: nameController,
-              hintText: '이름',
-              textInputType: TextInputType.text),
-          TextFieldInput(
-            icon: Icons.lock,
-            textEditingController: passwordController,
-            hintText: '비밀번호',
-            textInputType: TextInputType.text,
-            isPass: true,
-          ),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFieldInput(
+                  textEditingController: emailController,
+                  hintText: '이메일',
+                  textInputType: TextInputType.text,
+                  prefixIcon: Icons.email)),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFieldInput(
+                  textEditingController: nameController,
+                  hintText: '이름',
+                  textInputType: TextInputType.text,
+                  prefixIcon: Icons.person)),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFieldInput(
+                  textEditingController: passwordController,
+                  hintText: '비밀번호',
+                  textInputType: TextInputType.text,
+                  prefixIcon: Icons.lock,
+                  isPass: true)),
           BlueButton(onTap: registerSubmit, text: "회원가입"),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
