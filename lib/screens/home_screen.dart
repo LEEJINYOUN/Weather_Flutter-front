@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/constants.dart';
 import 'package:weather_flutter_front/services/fetchWeather.dart';
+import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
@@ -16,8 +17,19 @@ class _HomeScreenState extends State<HomeScreen> {
   // 변수
   final TextEditingController searchController = TextEditingController();
   Map<String, dynamic> weatherData = {};
+  late Future<List<dynamic>> locations;
+
   bool isLoading = false;
   bool isSearch = false;
+
+  // state 진입시 api 데이터 가져오기
+  @override
+  void initState() {
+    super.initState();
+
+    // 지역 리스트 가져오기
+    locations = getLocationList();
+  }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
@@ -49,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       fetchData(searchController.text);
       dataPrint(text: searchController.text);
       searchController.text = '';
+      print(await locations);
     }
   }
 
@@ -103,9 +116,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             isSearch == false && weatherData.isEmpty
                 ? // 날씨 정보 없는 경우
-                const Text(
-                    '검색하세요.',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                const Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          '검색하세요.',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   )
                 : // 날씨 정보 있는 경우
                 SizedBox(
