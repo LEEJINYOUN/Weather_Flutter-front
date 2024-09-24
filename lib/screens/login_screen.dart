@@ -3,6 +3,7 @@ import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
 import 'package:weather_flutter_front/screens/register_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:weather_flutter_front/utils/validate.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 
@@ -18,6 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // 입력 포커스
+  FocusNode emailFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
+
+  // 폼 글로벌 키
+  final formField = GlobalKey<FormState>();
+
   // 로딩 체크
   bool isLoading = false;
 
@@ -31,31 +39,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // 로그인 기능
   void loginSubmit() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
+    var isCheckValidate = CheckValidate().formCheckValidate(formField);
 
-      // 로그인 API 연동
-      dynamic result = await AuthMethod().login(
-          email: emailController.text, password: passwordController.text);
+    if (isCheckValidate == null) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
 
-      if (result['statusCode'] == 201) {
-        // 로그인 성공일 경우
-        dataPrint(text: '로그인 성공!');
-        dataPrint(text: result['data']['user']['email']);
+        // 로그인 API 연동
+        dynamic result = await AuthMethod().login(
+            email: emailController.text, password: passwordController.text);
 
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) => const BottomNavBar(),
-        //   ),
-        // );
-      } else {
-        // 로그인 실패일 경우
-        dataPrint(text: result['data']);
+        if (result['statusCode'] == 201) {
+          // 로그인 성공일 경우
+          dataPrint(text: '로그인 성공!');
+          dataPrint(text: result['data']['user']['email']);
+
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (context) => const BottomNavBar(),
+          //   ),
+          // );
+        } else {
+          // 로그인 실패일 경우
+          dataPrint(text: result['data']);
+        }
+      } catch (e) {
+        dataPrint(text: e);
       }
-    } catch (e) {
-      dataPrint(text: e);
+    } else {
+      dataPrint(text: isCheckValidate);
     }
   }
 
@@ -70,6 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text("로그인", style: TextStyle(fontWeight: FontWeight.w700)),
       ),
       body: SafeArea(
+          child: Form(
+        key: formField,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -84,7 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     textEditingController: emailController,
                     hintText: '이메일',
                     textInputType: TextInputType.text,
-                    prefixIcon: Icons.email)),
+                    prefixIcon: Icons.email,
+                    focusNode: emailFocus,
+                    validator: (value) =>
+                        CheckValidate().validateEmail(emailFocus, value))),
             Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -93,6 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: '비밀번호',
                     textInputType: TextInputType.text,
                     prefixIcon: Icons.lock,
+                    focusNode: passwordFocus,
+                    validator: (value) =>
+                        CheckValidate().validatePassword(passwordFocus, value),
                     isPass: true)),
             BlueButton(onTap: loginSubmit, text: "로그인"),
             Padding(
@@ -119,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

@@ -10,6 +10,8 @@ class TextFieldInput extends StatelessWidget {
     this.prefixIcon,
     this.suffixOnTap,
     this.suffixIcon,
+    this.focusNode,
+    this.validator,
     this.isPass = false,
   });
 
@@ -23,11 +25,13 @@ class TextFieldInput extends StatelessWidget {
   final IconData? prefixIcon;
   final dynamic suffixOnTap;
   final IconData? suffixIcon;
+  final dynamic focusNode;
+  final dynamic validator;
   final bool isPass;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       style: const TextStyle(fontSize: 20),
       controller: textEditingController,
       decoration: InputDecoration(
@@ -57,6 +61,8 @@ class TextFieldInput extends StatelessWidget {
           horizontal: 20,
         ),
       ),
+      validator: validator,
+      focusNode: focusNode,
       keyboardType: TextInputType.text,
       obscureText: isPass,
     );
