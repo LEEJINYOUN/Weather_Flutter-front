@@ -27,8 +27,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // 폼 글로벌 키
   final formField = GlobalKey<FormState>();
 
-  // 로딩 체크
-  bool isLoading = false;
+  // 변수
+  String message = '';
+  bool isMatch = false;
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
@@ -41,14 +42,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   // 회원가입 기능
   void registerSubmit() async {
+    // db 유효성 초기화
+    setState(() {
+      isMatch = false;
+      message = '';
+    });
+
     var isCheckValidate = CheckValidate().formCheckValidate(formField);
 
     if (isCheckValidate == null) {
       try {
-        setState(() {
-          isLoading = true;
-        });
-
         // 회원가입 API 연동
         dynamic result = await AuthMethod().register(
             email: emailController.text,
@@ -67,6 +70,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         } else {
           // 회원가입 실패일 경우
           dataPrint(text: result['data']);
+
+          // db 유효성 체크
+          setState(() {
+            isMatch = true;
+            message = result['data'];
+          });
         }
       } catch (e) {
         dataPrint(text: e);
@@ -98,16 +107,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     padding: const EdgeInsets.only(top: 20, bottom: 20),
                   ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: TextFieldInput(
-                          textEditingController: emailController,
-                          hintText: '이메일',
-                          textInputType: TextInputType.text,
-                          prefixIcon: Icons.email,
-                          focusNode: emailFocus,
-                          validator: (value) => CheckValidate()
-                              .validateEmail(emailFocus, value))),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: TextFieldInput(
+                        textEditingController: emailController,
+                        hintText: '이메일',
+                        textInputType: TextInputType.text,
+                        prefixIcon: Icons.email,
+                        focusNode: emailFocus,
+                        validator: (value) =>
+                            CheckValidate().validateEmail(emailFocus, value)),
+                  ),
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
@@ -123,15 +133,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      child: TextFieldInput(
-                          textEditingController: passwordController,
-                          hintText: '비밀번호',
-                          textInputType: TextInputType.text,
-                          prefixIcon: Icons.lock,
-                          focusNode: passwordFocus,
-                          validator: (value) => CheckValidate()
-                              .validatePassword(passwordFocus, value),
-                          isPass: true)),
+                      child: Column(
+                        children: [
+                          TextFieldInput(
+                              textEditingController: passwordController,
+                              hintText: '비밀번호',
+                              textInputType: TextInputType.text,
+                              prefixIcon: Icons.lock,
+                              focusNode: passwordFocus,
+                              validator: (value) => CheckValidate()
+                                  .validatePassword(passwordFocus, value),
+                              isPass: true),
+                          if (isMatch)
+                            Container(
+                              padding: const EdgeInsets.only(top: 10, left: 15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    message,
+                                    style: const TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 252, 105, 95),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  )
+                                ],
+                              ),
+                            )
+                        ],
+                      )),
                   BlueButton(onTap: registerSubmit, text: "회원가입"),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

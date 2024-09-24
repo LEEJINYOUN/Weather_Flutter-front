@@ -26,8 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
   // 폼 글로벌 키
   final formField = GlobalKey<FormState>();
 
-  // 로딩 체크
-  bool isLoading = false;
+  // 변수
+  String message = '';
+  bool isMatch = false;
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
@@ -39,14 +40,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // 로그인 기능
   void loginSubmit() async {
+    // db 유효성 초기화
+    setState(() {
+      isMatch = false;
+      message = '';
+    });
+
     var isCheckValidate = CheckValidate().formCheckValidate(formField);
 
     if (isCheckValidate == null) {
       try {
-        setState(() {
-          isLoading = true;
-        });
-
         // 로그인 API 연동
         dynamic result = await AuthMethod().login(
             email: emailController.text, password: passwordController.text);
@@ -64,6 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           // 로그인 실패일 경우
           dataPrint(text: result['data']);
+
+          // db 유효성 체크
+          setState(() {
+            isMatch = true;
+            message = result['data'];
+          });
         }
       } catch (e) {
         dataPrint(text: e);
@@ -107,15 +116,35 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: TextFieldInput(
-                    textEditingController: passwordController,
-                    hintText: '비밀번호',
-                    textInputType: TextInputType.text,
-                    prefixIcon: Icons.lock,
-                    focusNode: passwordFocus,
-                    validator: (value) =>
-                        CheckValidate().validatePassword(passwordFocus, value),
-                    isPass: true)),
+                child: Column(
+                  children: [
+                    TextFieldInput(
+                        textEditingController: passwordController,
+                        hintText: '비밀번호',
+                        textInputType: TextInputType.text,
+                        prefixIcon: Icons.lock,
+                        focusNode: passwordFocus,
+                        validator: (value) => CheckValidate()
+                            .validatePassword(passwordFocus, value),
+                        isPass: true),
+                    if (isMatch)
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, left: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              message,
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 252, 105, 95),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
+                      )
+                  ],
+                )),
             BlueButton(onTap: loginSubmit, text: "로그인"),
             Padding(
               padding: const EdgeInsets.only(top: 10),
