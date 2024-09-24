@@ -33,7 +33,7 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
 
   // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {
