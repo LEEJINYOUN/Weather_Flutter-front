@@ -46,14 +46,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (result['statusCode'] == 201) {
         // 회원가입 성공일 경우
         dataPrint(text: '회원가입 성공!');
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const LoginScreen(),
-          ),
-        );
+        dataPrint(text: result['data']);
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => const LoginScreen(),
+        //   ),
+        // );
       } else {
         // 회원가입 실패일 경우
-        print(result['data']);
+        dataPrint(text: result['data']);
       }
     } catch (e) {
       dataPrint(text: e);

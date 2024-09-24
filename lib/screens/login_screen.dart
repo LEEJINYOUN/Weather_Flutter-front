@@ -1,7 +1,8 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
 import 'package:weather_flutter_front/screens/register_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
+import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 
@@ -28,30 +29,33 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
-  // 입력 값 체크 (임시)
-  void dataPrint(String text) {
-    log(text);
-  }
-
   // 로그인 기능
   void loginSubmit() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    String result = await AuthMethod()
-        .login(email: emailController.text, password: passwordController.text);
-
-    if (result == "success") {
+    try {
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
-      dataPrint('로그인 성공!');
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      dataPrint(result);
+
+      // 로그인 API 연동
+      dynamic result = await AuthMethod().login(
+          email: emailController.text, password: passwordController.text);
+
+      if (result['statusCode'] == 201) {
+        // 로그인 성공일 경우
+        dataPrint(text: '로그인 성공!');
+        dataPrint(text: result['data']['user']['email']);
+
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => const BottomNavBar(),
+        //   ),
+        // );
+      } else {
+        // 로그인 실패일 경우
+        dataPrint(text: result['data']);
+      }
+    } catch (e) {
+      dataPrint(text: e);
     }
   }
 
