@@ -17,15 +17,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // storage
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
 
   // 변수
-  Map<String, dynamic> weatherData = {};
-  late Future<List<dynamic>> locations;
   Map<String, dynamic> userInfo = {};
+  dynamic locations;
+  Map<String, dynamic> weatherData = {};
   bool isLoading = false;
   bool isSearch = false;
 
@@ -34,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getUserInfo();
-
-    // 지역 리스트 가져오기
-    locations = getLocationList();
+    getLocations();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -57,6 +55,19 @@ class _HomeScreenState extends State<HomeScreen> {
       dataPrint(text: userInfo['email']);
     } catch (e) {
       dataPrint(text: e);
+    }
+  }
+
+  // 지역 리스트 가져오기
+  void getLocations() async {
+    try {
+      dynamic result = await LocationMethod().getLocationList();
+      setState(() {
+        locations = result;
+      });
+    } catch (e) {
+      dataPrint(text: e);
+      rethrow;
     }
   }
 

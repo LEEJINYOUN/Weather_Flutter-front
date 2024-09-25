@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   // storage
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   // 입력 컨트롤러
   final TextEditingController emailController = TextEditingController();

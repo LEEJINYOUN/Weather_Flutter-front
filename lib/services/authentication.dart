@@ -5,7 +5,7 @@ import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthMethod {
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   // 회원가입
   Future<dynamic> register({
