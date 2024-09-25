@@ -6,6 +6,7 @@ import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/utils/validate.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // storage
+  final storage = FlutterSecureStorage();
+
   // 입력 컨트롤러
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -29,6 +33,26 @@ class _LoginScreenState extends State<LoginScreen> {
   // 변수
   String message = '';
   bool isMatch = false;
+
+  // state 진입시 함수 실행
+  @override
+  void initState() {
+    super.initState();
+    isStorage();
+  }
+
+  // 로그인 유지
+  isStorage() async {
+    if (await storage.read(key: "token") != null) {
+      if (!mounted) return;
+      print('로그인 유지 성공!');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const BottomNavBar(),
+        ),
+      );
+    }
+  }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
@@ -57,13 +81,12 @@ class _LoginScreenState extends State<LoginScreen> {
         if (result['statusCode'] == 201) {
           // 로그인 성공일 경우
           dataPrint(text: '로그인 성공!');
-          dataPrint(text: result['data']['user']['email']);
 
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => const BottomNavBar(),
-          //   ),
-          // );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const BottomNavBar(),
+            ),
+          );
         } else {
           // 로그인 실패일 경우
           dataPrint(text: result['data']);

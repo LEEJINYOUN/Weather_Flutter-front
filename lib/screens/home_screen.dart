@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/constants.dart';
+import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/fetchWeather.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,18 +16,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // storage
+  final storage = FlutterSecureStorage();
+
   // 변수
   final TextEditingController searchController = TextEditingController();
   Map<String, dynamic> weatherData = {};
   late Future<List<dynamic>> locations;
+  Map<String, dynamic> userInfo = {};
 
   bool isLoading = false;
   bool isSearch = false;
 
-  // state 진입시 api 데이터 가져오기
+  // state 진입시 함수 실행
   @override
   void initState() {
     super.initState();
+    getUserInfo();
 
     // 지역 리스트 가져오기
     locations = getLocationList();
@@ -36,6 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     super.dispose();
     searchController.dispose();
+  }
+
+  // 유저 정보 가져오기
+  void getUserInfo() async {
+    var token = await storage.read(key: "token");
+    var getUserInfo = await AuthMethod().user(token: token);
+    setState(() {
+      userInfo = getUserInfo;
+    });
+    print(userInfo['email']);
   }
 
   // 날씨 정보 가져오기

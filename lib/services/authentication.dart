@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:weather_flutter_front/constants.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthMethod {
+  final storage = FlutterSecureStorage();
+
   // 회원가입
   Future<dynamic> register({
     required String email,
@@ -12,36 +15,32 @@ class AuthMethod {
   }) async {
     try {
       var url = '${backendUrl()}/register';
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: <String, String>{
-          'email': email,
-          'name': name,
-          'password': password
-        },
-      );
+      var reqBody = {'email': email, 'name': name, 'password': password};
 
-      String body = response.body;
+      var response = await http.post(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(reqBody));
+
+      var jsonResponse = jsonDecode(response.body);
 
       if (response.statusCode == 201) {
         // 회원가입 성공일 경우
-        Map<String, dynamic> userData = {
-          'data': jsonDecode(body),
+        Map<String, dynamic> registerData = {
+          "data": jsonResponse,
           "statusCode": response.statusCode
         };
 
-        return userData;
+        return registerData;
       } else {
         // 회원가입 실패일 경우
-        Map<String, dynamic> userData = {
-          'data': jsonDecode(body)['message'],
+        Map<String, dynamic> registerData = {
+          "data": jsonResponse['message'],
           "statusCode": response.statusCode
         };
 
-        return userData;
+        return registerData;
       }
     } catch (e) {
       dataPrint(text: e);
@@ -55,20 +54,30 @@ class AuthMethod {
   }) async {
     try {
       var url = '${backendUrl()}/login';
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: <String, String>{'email': email, 'password': password},
-      );
+      var reqBody = {'email': email, 'password': password};
 
-      String body = response.body;
+      var response = await http.post(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(reqBody));
+
+      var jsonResponse = jsonDecode(response.body);
+      var token = jsonResponse['token'];
 
       if (response.statusCode == 201) {
         // 로그인 성공일 경우
+
+        if (token != null) {
+          await storage.deleteAll();
+          await storage.write(key: 'token', value: token);
+        } else {
+          token = null;
+          await storage.deleteAll();
+        }
+
         Map<String, dynamic> userData = {
-          'data': jsonDecode(body),
+          "data": jsonResponse,
           "statusCode": response.statusCode
         };
 
@@ -76,12 +85,32 @@ class AuthMethod {
       } else {
         // 로그인 실패일 경우
         Map<String, dynamic> userData = {
-          'data': jsonDecode(body)['message'],
+          "data": jsonResponse['message'],
           "statusCode": response.statusCode
         };
 
         return userData;
       }
+    } catch (e) {
+      dataPrint(text: e);
+    }
+  }
+
+  // 유저 정보 가져오기
+  Future<dynamic> user({required dynamic token}) async {
+    try {
+      var url = '${backendUrl()}/user';
+      var reqBody = {'token': token};
+
+      var response = await http.post(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(reqBody));
+
+      var jsonResponse = jsonDecode(response.body);
+
+      return jsonResponse;
     } catch (e) {
       dataPrint(text: e);
     }

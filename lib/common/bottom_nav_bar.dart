@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
-import 'package:weather_flutter_front/screens/login_screen.dart';
-import 'package:weather_flutter_front/screens/register_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -28,12 +26,10 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
     const HomeScreen(),
     const Center(child: Text('Bookmark')),
     const Center(child: Text('Profile')),
-    const LoginScreen(),
-    const RegisterScreen(),
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 4;
+  int _selectedIndex = 0;
 
   // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {
@@ -66,18 +62,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
                   activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
                   label: 'Profile'),
-              BottomNavigationBarItem(
-                  icon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
-                  activeIcon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
-                  label: 'Login'),
-              BottomNavigationBarItem(
-                  icon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
-                  activeIcon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
-                  label: 'Register'),
             ]));
   }
 }

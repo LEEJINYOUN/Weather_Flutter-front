@@ -62,11 +62,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // 회원가입 성공일 경우
           dataPrint(text: '회원가입 성공!');
           dataPrint(text: result['data']['email']);
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => const LoginScreen(),
-          //   ),
-          // );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ),
+          );
         } else {
           // 회원가입 실패일 경우
           dataPrint(text: result['data']);
