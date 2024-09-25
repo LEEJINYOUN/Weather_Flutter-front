@@ -115,4 +115,25 @@ class AuthMethod {
       dataPrint(text: e);
     }
   }
+
+  // 로그아웃
+  Future<dynamic> logout() async {
+    try {
+      var url = '${backendUrl()}/logout';
+
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      var jsonResponse = jsonDecode(response.body);
+
+      await storage.deleteAll();
+      return jsonResponse;
+    } catch (e) {
+      dataPrint(text: e);
+    }
+  }
 }

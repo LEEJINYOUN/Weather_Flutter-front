@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SubInfoField extends StatelessWidget {
+  // 변수
+  final String title;
+  final dynamic value;
+
   const SubInfoField({
     super.key,
     required this.title,
     required this.value,
   });
-
-  // 변수
-  final String title;
-  final dynamic value;
 
   @override
   Widget build(BuildContext context) {

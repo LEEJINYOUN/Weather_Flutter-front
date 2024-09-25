@@ -19,12 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
   // storage
   final storage = FlutterSecureStorage();
 
-  // 변수
+  // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
+
+  // 변수
   Map<String, dynamic> weatherData = {};
   late Future<List<dynamic>> locations;
   Map<String, dynamic> userInfo = {};
-
   bool isLoading = false;
   bool isSearch = false;
 
@@ -47,12 +48,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 유저 정보 가져오기
   void getUserInfo() async {
-    var token = await storage.read(key: "token");
-    var getUserInfo = await AuthMethod().user(token: token);
-    setState(() {
-      userInfo = getUserInfo;
-    });
-    print(userInfo['email']);
+    try {
+      var token = await storage.read(key: "token");
+      var getUserInfo = await AuthMethod().user(token: token);
+      setState(() {
+        userInfo = getUserInfo;
+      });
+      dataPrint(text: userInfo['email']);
+    } catch (e) {
+      dataPrint(text: e);
+    }
   }
 
   // 날씨 정보 가져오기
@@ -62,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         weatherData = data;
       });
-    } catch (error) {
-      dataPrint(text: error);
+    } catch (e) {
+      dataPrint(text: e);
     }
   }
 

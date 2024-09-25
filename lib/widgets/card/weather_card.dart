@@ -4,13 +4,13 @@ import 'package:weather_flutter_front/widgets/table/weather/main_info_field.dart
 import 'package:weather_flutter_front/widgets/table/weather/sub_info_field.dart';
 
 class WeatherCard extends StatelessWidget {
+  // 변수
+  final dynamic weatherData;
+
   const WeatherCard({
     super.key,
     required this.weatherData,
   });
-
-  // 변수
-  final dynamic weatherData;
 
   @override
   Widget build(BuildContext context) {

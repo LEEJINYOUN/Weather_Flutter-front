@@ -38,20 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    isStorage();
-  }
-
-  // 로그인 유지
-  isStorage() async {
-    if (await storage.read(key: "token") != null) {
-      if (!mounted) return;
-      print('로그인 유지 성공!');
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const BottomNavBar(),
-        ),
-      );
-    }
+    isLogged();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -62,6 +49,19 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
+  // 로그인 상태 확인
+  void isLogged() async {
+    if (await storage.read(key: "token") != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const BottomNavBar(),
+        ),
+      );
+    } else {
+      return;
+    }
+  }
+
   // 로그인 기능
   void loginSubmit() async {
     // db 유효성 초기화
@@ -70,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
       message = '';
     });
 
+    // 유효성 체크
     var isCheckValidate = CheckValidate().formCheckValidate(formField);
 
     if (isCheckValidate == null) {

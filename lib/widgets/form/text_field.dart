@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 
 class TextFieldInput extends StatelessWidget {
-  const TextFieldInput({
-    super.key,
-    required this.textEditingController,
-    required this.textInputType,
-    required this.hintText,
-    this.prefixOnTap,
-    this.prefixIcon,
-    this.suffixOnTap,
-    this.suffixIcon,
-    this.focusNode,
-    this.validator,
-    this.isPass = false,
-  });
-
   // 입력 컨트롤러
   final TextEditingController textEditingController;
 
@@ -28,6 +14,20 @@ class TextFieldInput extends StatelessWidget {
   final dynamic focusNode;
   final dynamic validator;
   final bool isPass;
+
+  const TextFieldInput({
+    super.key,
+    required this.textEditingController,
+    required this.textInputType,
+    required this.hintText,
+    this.prefixOnTap,
+    this.prefixIcon,
+    this.suffixOnTap,
+    this.suffixIcon,
+    this.focusNode,
+    this.validator,
+    this.isPass = false,
+  });
 
   @override
   Widget build(BuildContext context) {

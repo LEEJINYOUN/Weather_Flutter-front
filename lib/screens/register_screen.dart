@@ -48,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       message = '';
     });
 
+    // 유효성 체크
     var isCheckValidate = CheckValidate().formCheckValidate(formField);
 
     if (isCheckValidate == null) {
@@ -61,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (result['statusCode'] == 201) {
           // 회원가입 성공일 경우
           dataPrint(text: '회원가입 성공!');
-          dataPrint(text: result['data']['email']);
+
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const LoginScreen(),

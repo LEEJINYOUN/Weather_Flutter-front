@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
 
 void main() {
