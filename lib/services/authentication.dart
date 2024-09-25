@@ -7,6 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class AuthMethod {
   final storage = const FlutterSecureStorage();
 
+  var backendUrl = BACKEND_URL();
+
   // 회원가입
   Future<dynamic> register({
     required String email,
@@ -14,7 +16,7 @@ class AuthMethod {
     required String password,
   }) async {
     try {
-      var url = '${backendUrl()}/register';
+      var url = '${backendUrl}/register';
       var reqBody = {'email': email, 'name': name, 'password': password};
 
       var response = await http.post(Uri.parse(url),
@@ -26,7 +28,7 @@ class AuthMethod {
       var jsonResponse = jsonDecode(response.body);
 
       if (response.statusCode == 201) {
-        // 회원가입 성공일 경우
+        // 회원가입 성공
         Map<String, dynamic> registerData = {
           "data": jsonResponse,
           "statusCode": response.statusCode
@@ -34,7 +36,7 @@ class AuthMethod {
 
         return registerData;
       } else {
-        // 회원가입 실패일 경우
+        // 회원가입 실패
         Map<String, dynamic> registerData = {
           "data": jsonResponse['message'],
           "statusCode": response.statusCode
@@ -53,7 +55,7 @@ class AuthMethod {
     required String password,
   }) async {
     try {
-      var url = '${backendUrl()}/login';
+      var url = '${backendUrl}/login';
       var reqBody = {'email': email, 'password': password};
 
       var response = await http.post(Uri.parse(url),
@@ -66,7 +68,7 @@ class AuthMethod {
       var token = jsonResponse['token'];
 
       if (response.statusCode == 201) {
-        // 로그인 성공일 경우
+        // 로그인 성공
 
         if (token != null) {
           await storage.deleteAll();
@@ -83,7 +85,7 @@ class AuthMethod {
 
         return userData;
       } else {
-        // 로그인 실패일 경우
+        // 로그인 실패
         Map<String, dynamic> userData = {
           "data": jsonResponse['message'],
           "statusCode": response.statusCode
@@ -99,7 +101,7 @@ class AuthMethod {
   // 유저 정보 가져오기
   Future<dynamic> user({required dynamic token}) async {
     try {
-      var url = '${backendUrl()}/user';
+      var url = '${backendUrl}/user';
       var reqBody = {'token': token};
 
       var response = await http.post(Uri.parse(url),
@@ -119,7 +121,7 @@ class AuthMethod {
   // 로그아웃
   Future<dynamic> logout() async {
     try {
-      var url = '${backendUrl()}/logout';
+      var url = '${backendUrl}/logout';
 
       var response = await http.post(
         Uri.parse(url),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/constants.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
-import 'package:weather_flutter_front/services/fetchWeather.dart';
+import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
@@ -72,11 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // 날씨 정보 가져오기
-  Future<void> fetchData(String cityName) async {
+  void fetchData(String cityName) async {
     try {
-      Map<String, dynamic> data = await fetchWeather(cityName, apiKey());
+      dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
-        weatherData = data;
+        weatherData = result;
       });
     } catch (e) {
       dataPrint(text: e);
@@ -94,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
       fetchData(searchController.text);
       dataPrint(text: searchController.text);
       searchController.text = '';
-      print(await locations);
     }
   }
 
