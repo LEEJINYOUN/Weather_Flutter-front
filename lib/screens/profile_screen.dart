@@ -82,8 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: const Image(
-                        image:
-                            AssetImage('assets/images/userIcon_default1.jpg')),
+                        image: AssetImage('assets/images/user_icon1.jpg')),
                   ),
                 ),
                 const SizedBox(

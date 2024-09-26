@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/services/authentication.dart';
+import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/weather.dart';
-import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class BookmarkScreen extends StatefulWidget {
@@ -22,17 +22,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
 
   // 변수
   Map<String, dynamic> userInfo = {};
-  dynamic locations;
+  dynamic bookmarks;
   Map<String, dynamic> weatherData = {};
-  bool isLoading = false;
-  bool isSearch = false;
+  bool isBookmarkList = false;
 
   // state 진입시 함수 실행
   @override
   void initState() {
     super.initState();
-    getLocations();
-    fetchData('Daegu');
+    getUserInfo();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -42,13 +40,29 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     searchController.dispose();
   }
 
-  // 지역 리스트 가져오기
-  void getLocations() async {
+  // 유저 정보 가져오기
+  void getUserInfo() async {
     try {
-      dynamic result = await LocationMethod().getLocationList();
+      var token = await storage.read(key: "token");
+      var getUserInfo = await AuthMethod().user(token: token);
       setState(() {
-        locations = result;
+        userInfo = getUserInfo;
       });
+      getBookmarks();
+    } catch (e) {
+      dataPrint(text: e);
+    }
+  }
+
+  // 즐겨찾기 리스트 가져오기
+  void getBookmarks() async {
+    try {
+      dynamic result = await BookmarkMethod().getBookmarkList(userInfo['id']);
+      setState(() {
+        isBookmarkList = true;
+        bookmarks = result;
+      });
+      print(bookmarks.length);
     } catch (e) {
       dataPrint(text: e);
       rethrow;
@@ -56,7 +70,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   // 날씨 정보 가져오기
-  void fetchData(String cityName) async {
+  void getWeather(String cityName) async {
     try {
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
@@ -65,29 +79,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     } catch (e) {
       dataPrint(text: e);
     }
-  }
-
-  // 날씨 검색
-  void searchSubmit() async {
-    setState(() {
-      isLoading = true;
-      isSearch = true;
-    });
-
-    if (searchController.text != '') {
-      fetchData(searchController.text);
-      dataPrint(text: searchController.text);
-      searchController.text = '';
-    }
-  }
-
-  // 검색 초기화
-  void resetSubmit() {
-    weatherData = {};
-    dataPrint(text: '초기화');
-    setState(() {
-      isSearch = false;
-    });
   }
 
   @override
@@ -112,27 +103,52 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                  Row(
+                  // 즐겨찾기 리스트
+                  Column(
                     children: [
+                      Text('즐겨찾기 개수 ( ${bookmarks.length} )',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20)),
                       Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(vertical: 15),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        // child:
-                        //     // 검색 필드
-                        //     TextFieldInput(
-                        //   textEditingController: searchController,
-                        //   textInputType: TextInputType.text,
-                        //   hintText: '지역 검색',
-                        //   prefixOnTap: searchSubmit,
-                        //   prefixIcon: Icons.search,
-                        //   suffixOnTap: resetSubmit,
-                        //   suffixIcon: Icons.close,
-                        // )
-                      )
+                          width: MediaQuery.of(context).size.width,
+                          height: 80,
+                          margin: const EdgeInsets.symmetric(vertical: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: isBookmarkList
+                              ? ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  padding:
+                                      const EdgeInsets.only(top: 5, bottom: 5),
+                                  itemCount: bookmarks.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return InkWell(
+                                        onTap: () => getWeather(
+                                            '${bookmarks[index]['location_en']}'),
+                                        child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            width: 120,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: AssetImage(
+                                                    'assets/images/bg_image2.jpg'), // 배경 이미지
+                                              ),
+                                            ),
+                                            child: Center(
+                                                child: Text(
+                                              '${bookmarks[index]['location_kr']}',
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600),
+                                            ))));
+                                  })
+                              : null)
                     ],
                   ),
-                  isSearch == false && weatherData.isEmpty
+                  weatherData.isEmpty
                       ? // 날씨 정보 없는 경우
                       const Center(
                           child: Column(

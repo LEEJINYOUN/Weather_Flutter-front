@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic> userInfo = {};
   dynamic locations;
   Map<String, dynamic> weatherData = {};
-  bool isLoading = false;
   bool isSearch = false;
 
   // state 진입시 함수 실행
@@ -55,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // 날씨 정보 가져오기
-  void fetchData(String cityName) async {
+  void getWeather(String cityName) async {
     try {
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
@@ -69,12 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
   // 날씨 검색
   void searchSubmit() async {
     setState(() {
-      isLoading = true;
       isSearch = true;
     });
 
     if (searchController.text != '') {
-      fetchData(searchController.text);
+      getWeather(searchController.text);
       dataPrint(text: searchController.text);
       searchController.text = '';
     }
@@ -114,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // 검색 컨테이너
                 Container(
                     width: MediaQuery.of(context).size.width,
+                    height: 80,
                     margin: const EdgeInsets.symmetric(vertical: 15),
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child:
@@ -129,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
               ],
             ),
-            isSearch == false && weatherData.isEmpty
+            weatherData.isEmpty
                 ? // 날씨 정보 없는 경우
                 const Center(
                     child: Column(
