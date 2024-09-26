@@ -23,6 +23,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 변수
   Map<String, dynamic> userInfo = {};
   dynamic bookmarks;
+  int bookmarkLen = 0;
   Map<String, dynamic> weatherData = {};
   bool isBookmarkList = false;
 
@@ -61,8 +62,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       setState(() {
         isBookmarkList = true;
         bookmarks = result;
+        bookmarkLen = bookmarks.length;
       });
-      print(bookmarks.length);
     } catch (e) {
       dataPrint(text: e);
       rethrow;
@@ -106,7 +107,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                   // 즐겨찾기 리스트
                   Column(
                     children: [
-                      Text('즐겨찾기 개수 ( ${bookmarks.length} )',
+                      Text('즐겨찾기 개수 ( $bookmarkLen )',
                           style: const TextStyle(
                               color: Colors.white, fontSize: 20)),
                       Container(
