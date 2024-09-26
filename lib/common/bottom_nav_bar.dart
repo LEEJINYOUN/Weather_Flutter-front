@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:weather_flutter_front/screens/bookmark_screen.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
 import 'package:weather_flutter_front/screens/profile_screen.dart';
 
@@ -25,12 +26,12 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   // 하단 메뉴 리스트
   final appScreens = [
     const HomeScreen(),
-    const Center(child: Text('Bookmark')),
+    const BookmarkScreen(),
     const ProfileScreen(),
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {

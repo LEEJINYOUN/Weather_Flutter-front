@@ -3,6 +3,7 @@ import 'package:weather_flutter_front/screens/login_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +13,32 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  // storage
+  final storage = const FlutterSecureStorage();
+
+  // 변수
+  Map<String, dynamic> userInfo = {};
+
+  // state 진입시 함수 실행
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  // 유저 정보 가져오기
+  void getUserInfo() async {
+    try {
+      var token = await storage.read(key: "token");
+      var getUserInfo = await AuthMethod().user(token: token);
+      setState(() {
+        userInfo = getUserInfo;
+      });
+    } catch (e) {
+      dataPrint(text: e);
+    }
+  }
+
   // 로그아웃 기능
   void logoutSubmit() async {
     try {
@@ -43,11 +70,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title:
               const Text("프로필", style: TextStyle(fontWeight: FontWeight.w700)),
         ),
-        body: SafeArea(
-          child: SizedBox(
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
             width: MediaQuery.of(context).size.width,
-            height: 100,
-            child: BlueButton(onTap: logoutSubmit, text: "로그아웃"),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: const Image(
+                        image:
+                            AssetImage('assets/images/userIcon_default1.jpg')),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  userInfo['name'] ?? 'Loading...',
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  userInfo['email'] ?? 'Loading...',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                    width: 200,
+                    child: BlueButton(onTap: logoutSubmit, text: "로그아웃"))
+              ],
+            ),
           ),
         ));
   }

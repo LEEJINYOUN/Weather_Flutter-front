@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getUserInfo();
     getLocations();
   }
 
@@ -41,20 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-  }
-
-  // 유저 정보 가져오기
-  void getUserInfo() async {
-    try {
-      var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().user(token: token);
-      setState(() {
-        userInfo = getUserInfo;
-      });
-      dataPrint(text: userInfo['email']);
-    } catch (e) {
-      dataPrint(text: e);
-    }
   }
 
   // 지역 리스트 가져오기
