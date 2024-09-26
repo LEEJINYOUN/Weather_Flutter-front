@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
@@ -107,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 5,
           title: const Text("홈", style: TextStyle(fontWeight: FontWeight.w700)),
         ),
-        body: SafeArea(
+        body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Row(

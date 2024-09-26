@@ -31,7 +31,7 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
 
   // 하단 메뉴 버튼 변경
   void _onItemTapped(int index) {
@@ -50,6 +50,7 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
             onTap: _onItemTapped,
             selectedItemColor: Colors.blueGrey,
             unselectedItemColor: const Color(0xff526400),
+            showUnselectedLabels: false,
             showSelectedLabels: false,
             items: const [
               BottomNavigationBarItem(
