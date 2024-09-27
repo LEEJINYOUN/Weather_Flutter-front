@@ -31,7 +31,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     'location_kr': "",
     'location_en': "",
   };
-  bool isBookmark = false;
+  bool isBookmark = true;
 
   // state 진입시 함수 실행
   @override
@@ -91,8 +91,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 즐겨찾기 지역 조회
   void getBookmark() async {
     try {
-      dynamic result = await BookmarkMethod()
-          .getBookmarkLocation(userInfo['id'], searched['id']);
+      dynamic result = await BookmarkMethod().getBookmarkLocation(
+          userId: userInfo['id'], locationId: searched['id']);
       if (result != 0) {
         setState(() {
           isBookmark = true;
@@ -112,6 +112,29 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     });
     getBookmark();
     getWeather(searched['location_en']);
+  }
+
+  // 즐겨찾기 기능
+  void bookmarkIconClick() async {
+    try {
+      // 즐겨찾기 추가 및 삭제 API 연동
+      dynamic result = await BookmarkMethod().editBookmark(
+        userId: userInfo['id'],
+        locationId: searched['id'],
+        locationKr: searched['location_kr'],
+        locationEn: searched['location_en'],
+      );
+
+      if (result == true) {
+        setState(() {
+          isBookmark = false;
+          weatherData = {};
+        });
+        getBookmarks();
+      }
+    } catch (e) {
+      dataPrint(text: e);
+    }
   }
 
   @override
@@ -209,7 +232,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               WeatherCard(
                                   weatherData: weatherData,
                                   searched: searched,
-                                  isBookmark: isBookmark))
+                                  isBookmark: isBookmark,
+                                  bookmarkIconClick: bookmarkIconClick))
                 ]))));
   }
 }

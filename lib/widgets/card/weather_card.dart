@@ -9,12 +9,14 @@ class WeatherCard extends StatelessWidget {
   final dynamic weatherData;
   final dynamic searched;
   final bool isBookmark;
+  final VoidCallback bookmarkIconClick;
 
   const WeatherCard({
     super.key,
     required this.weatherData,
     this.searched,
     required this.isBookmark,
+    required this.bookmarkIconClick,
   });
 
   @override
@@ -32,17 +34,19 @@ class WeatherCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 isBookmark
-                    ? const SizedBox(
-                        child: Icon(
+                    ? IconButton(
+                        icon: const Icon(
                           FluentSystemIcons.ic_fluent_heart_filled,
-                          color: Colors.red,
                         ),
+                        color: Colors.red,
+                        onPressed: bookmarkIconClick,
                       )
-                    : const SizedBox(
-                        child: Icon(
+                    : IconButton(
+                        icon: const Icon(
                           FluentSystemIcons.ic_fluent_heart_regular,
-                          color: Colors.red,
                         ),
+                        color: Colors.red,
+                        onPressed: bookmarkIconClick,
                       ),
                 MainInfoField(
                     value: '${searched["location_kr"]}', fontSize: 25),

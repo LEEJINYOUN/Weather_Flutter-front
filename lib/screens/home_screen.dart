@@ -89,8 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // 즐겨찾기 지역 조회
   void getBookmark() async {
     try {
-      dynamic result = await BookmarkMethod()
-          .getBookmarkLocation(userInfo['id'], searched['id']);
+      dynamic result = await BookmarkMethod().getBookmarkLocation(
+          userId: userInfo['id'], locationId: searched['id']);
       if (result != 0) {
         setState(() {
           isBookmark = true;
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-// 지역 이름 변환
+  // 지역 이름 변환
   void changeKrToEn(String name) {
     for (dynamic location in locations) {
       if (location['location_kr'] == name) {
@@ -138,6 +138,31 @@ class _HomeScreenState extends State<HomeScreen> {
       searched['location_en'] = '';
       isBookmark = false;
     });
+  }
+
+  // 즐겨찾기 기능
+  void bookmarkIconClick() async {
+    try {
+      // 즐겨찾기 추가 및 삭제 API 연동
+      dynamic result = await BookmarkMethod().editBookmark(
+        userId: userInfo['id'],
+        locationId: searched['id'],
+        locationKr: searched['location_kr'],
+        locationEn: searched['location_en'],
+      );
+
+      if (result != true) {
+        setState(() {
+          isBookmark = true;
+        });
+      } else {
+        setState(() {
+          isBookmark = false;
+        });
+      }
+    } catch (e) {
+      dataPrint(text: e);
+    }
   }
 
   @override
@@ -202,7 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         WeatherCard(
                             weatherData: weatherData,
                             searched: searched,
-                            isBookmark: isBookmark),
+                            isBookmark: isBookmark,
+                            bookmarkIconClick: bookmarkIconClick),
                       ],
                     )
                     // 날씨 정보 카드
