@@ -6,10 +6,12 @@ import 'package:weather_flutter_front/widgets/table/weather/sub_info_field.dart'
 class WeatherCard extends StatelessWidget {
   // 변수
   final dynamic weatherData;
+  final dynamic searched;
 
   const WeatherCard({
     super.key,
     required this.weatherData,
+    this.searched,
   });
 
   @override
@@ -26,7 +28,8 @@ class WeatherCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                MainInfoField(value: '${weatherData["name"]}', fontSize: 25),
+                MainInfoField(
+                    value: '${searched["location_kr"]}', fontSize: 25),
                 Container(
                     width: 100,
                     height: 100,

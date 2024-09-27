@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
@@ -26,6 +28,11 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   int bookmarkLen = 0;
   Map<String, dynamic> weatherData = {};
   bool isBookmarkList = false;
+  Map<String, dynamic> searched = {
+    'id': 0,
+    'location_kr': "",
+    'location_en': "",
+  };
 
   // state 진입시 함수 실행
   @override
@@ -82,6 +89,19 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
+  // 지역 이름 변환
+  void changeKrToEn(tapData) {
+    // Map<String, dynamic> jsonData = jsonDecode(tapData);
+    print(tapData);
+    // setState(() {
+    //    searched['id'] = tapData['location_id'] as int;
+    //   searched['location_kr'] = tapData['location_kr'];
+    //   searched['location_en'] = tapData['location_en'];
+    // });
+    // print(searched);
+    // getWeather(searched['location_en']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -124,8 +144,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return InkWell(
-                                        onTap: () => getWeather(
-                                            '${bookmarks[index]['location_en']}'),
+                                        onTap: () =>
+                                            changeKrToEn('${bookmarks[index]}'),
+                                        // onTap: () => getWeather(
+                                        //     '${bookmarks[index]['location_en']}'),
                                         child: Container(
                                             margin: const EdgeInsets.only(
                                                 left: 10, right: 10),

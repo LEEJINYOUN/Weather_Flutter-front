@@ -25,6 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
   dynamic locations;
   Map<String, dynamic> weatherData = {};
   bool isSearch = false;
+  Map<String, dynamic> searched = {
+    'id': 0,
+    'location_kr': "",
+    'location_en': "",
+  };
 
   // state 진입시 함수 실행
   @override
@@ -65,6 +70,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+// 지역 이름 변환
+  void changeKrToEn(String name) {
+    for (dynamic location in locations) {
+      if (location['location_kr'] == name) {
+        setState(() {
+          searched['id'] = location['id'];
+          searched['location_kr'] = location['location_kr'];
+          searched['location_en'] = location['location_en'];
+        });
+      }
+    }
+    getWeather(searched['location_en']);
+  }
+
   // 날씨 검색
   void searchSubmit() async {
     setState(() {
@@ -72,8 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     if (searchController.text != '') {
-      getWeather(searchController.text);
       dataPrint(text: searchController.text);
+      changeKrToEn(searchController.text);
       searchController.text = '';
     }
   }
@@ -84,6 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
     dataPrint(text: '초기화');
     setState(() {
       isSearch = false;
+      searched['id'] = 0;
+      searched['location_kr'] = '';
+      searched['location_en'] = '';
     });
   }
 
@@ -146,7 +168,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height - 300,
                     child:
                         // 날씨 정보 카드
-                        WeatherCard(weatherData: weatherData))
+                        WeatherCard(
+                            weatherData: weatherData, searched: searched))
           ]),
         ),
       ),
