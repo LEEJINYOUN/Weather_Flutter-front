@@ -1,4 +1,3 @@
-import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
@@ -26,18 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
   // 변수
   Map<String, dynamic> userInfo = {};
   dynamic locations;
-  dynamic bookmarks;
   Map<String, dynamic> weatherData = {};
-  bool isSearch = false;
   Map<String, dynamic> searched = {
     'id': 0,
     'location_kr': "",
     'location_en': "",
   };
-
-  int locationId = 0;
-  int testId = 0;
-  String testName = '';
+  bool isBookmark = false;
 
   // state 진입시 함수 실행
   @override
@@ -62,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         userInfo = getUserInfo;
       });
-      getBookmarks();
     } catch (e) {
       dataPrint(text: e);
     }
@@ -74,19 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
       dynamic result = await LocationMethod().getLocationList();
       setState(() {
         locations = result;
-      });
-    } catch (e) {
-      dataPrint(text: e);
-      rethrow;
-    }
-  }
-
-  // 즐겨찾기 리스트 가져오기
-  void getBookmarks() async {
-    try {
-      dynamic result = await BookmarkMethod().getBookmarkList(userInfo['id']);
-      setState(() {
-        bookmarks = result;
       });
     } catch (e) {
       dataPrint(text: e);
@@ -106,17 +86,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-// 즐겨찾기 체크
-  void checkBookmark(String name) {
-    for (dynamic bookmark in bookmarks) {
-      if (bookmark['location_kr'] == name) {
-        print(searched['location_kr']);
-        // setState(() {
-        //   locationId = bookmark['location_id'];
-        //   testId = bookmark['location_id'];
-        //   testName = name;
-        // });
+  // 즐겨찾기 지역 조회
+  void getBookmark() async {
+    try {
+      dynamic result = await BookmarkMethod()
+          .getBookmarkLocation(userInfo['id'], searched['id']);
+      if (result != 0) {
+        setState(() {
+          isBookmark = true;
+        });
       }
+    } catch (e) {
+      dataPrint(text: e);
     }
   }
 
@@ -131,22 +112,20 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     }
+    getBookmark();
     getWeather(searched['location_en']);
   }
 
   // 날씨 검색
   void searchSubmit() async {
-    setState(() {
-      isSearch = true;
-      locationId = 0;
-    });
-
     if (searchController.text != '') {
-      // dataPrint(text: searchController.text);
       changeKrToEn(searchController.text);
-      checkBookmark(searchController.text);
       searchController.text = '';
     }
+
+    setState(() {
+      isBookmark = false;
+    });
   }
 
   // 검색 초기화
@@ -154,10 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
     weatherData = {};
     dataPrint(text: '초기화');
     setState(() {
-      isSearch = false;
       searched['id'] = 0;
       searched['location_kr'] = '';
       searched['location_en'] = '';
+      isBookmark = false;
     });
   }
 
@@ -220,17 +199,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height - 300,
                     child: Column(
                       children: [
-                        testId != 0 && locationId == 0
-                            ? const SizedBox(
-                                child: Icon(
-                                    FluentSystemIcons.ic_fluent_heart_filled),
-                              )
-                            : const SizedBox(
-                                child: Icon(
-                                    FluentSystemIcons.ic_fluent_heart_regular),
-                              ),
                         WeatherCard(
-                            weatherData: weatherData, searched: searched),
+                            weatherData: weatherData,
+                            searched: searched,
+                            isBookmark: isBookmark),
                       ],
                     )
                     // 날씨 정보 카드

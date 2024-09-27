@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/utils/celsiusConversion.dart';
 import 'package:weather_flutter_front/widgets/table/weather/main_info_field.dart';
 import 'package:weather_flutter_front/widgets/table/weather/sub_info_field.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 
 class WeatherCard extends StatelessWidget {
   // 변수
   final dynamic weatherData;
   final dynamic searched;
+  final bool isBookmark;
 
   const WeatherCard({
     super.key,
     required this.weatherData,
     this.searched,
+    required this.isBookmark,
   });
 
   @override
@@ -28,6 +31,19 @@ class WeatherCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                isBookmark
+                    ? const SizedBox(
+                        child: Icon(
+                          FluentSystemIcons.ic_fluent_heart_filled,
+                          color: Colors.red,
+                        ),
+                      )
+                    : const SizedBox(
+                        child: Icon(
+                          FluentSystemIcons.ic_fluent_heart_regular,
+                          color: Colors.red,
+                        ),
+                      ),
                 MainInfoField(
                     value: '${searched["location_kr"]}', fontSize: 25),
                 Container(
