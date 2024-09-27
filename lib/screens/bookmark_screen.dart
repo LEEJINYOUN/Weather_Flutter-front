@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
@@ -149,8 +147,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                               'location_en':
                                                   '${bookmarks[index]['location_en']}',
                                             }),
-                                        // onTap: () => getWeather(
-                                        //     '${bookmarks[index]['location_en']}'),
                                         child: Container(
                                             margin: const EdgeInsets.only(
                                                 left: 10, right: 10),

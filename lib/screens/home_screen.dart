@@ -1,4 +1,7 @@
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/services/authentication.dart';
+import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
@@ -23,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // 변수
   Map<String, dynamic> userInfo = {};
   dynamic locations;
+  dynamic bookmarks;
   Map<String, dynamic> weatherData = {};
   bool isSearch = false;
   Map<String, dynamic> searched = {
@@ -31,11 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
     'location_en': "",
   };
 
+  int locationId = 0;
+  int testId = 0;
+  String testName = '';
+
   // state 진입시 함수 실행
   @override
   void initState() {
     super.initState();
     getLocations();
+    getUserInfo();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -45,12 +54,39 @@ class _HomeScreenState extends State<HomeScreen> {
     searchController.dispose();
   }
 
+  // 유저 정보 가져오기
+  void getUserInfo() async {
+    try {
+      var token = await storage.read(key: "token");
+      var getUserInfo = await AuthMethod().user(token: token);
+      setState(() {
+        userInfo = getUserInfo;
+      });
+      getBookmarks();
+    } catch (e) {
+      dataPrint(text: e);
+    }
+  }
+
   // 지역 리스트 가져오기
   void getLocations() async {
     try {
       dynamic result = await LocationMethod().getLocationList();
       setState(() {
         locations = result;
+      });
+    } catch (e) {
+      dataPrint(text: e);
+      rethrow;
+    }
+  }
+
+  // 즐겨찾기 리스트 가져오기
+  void getBookmarks() async {
+    try {
+      dynamic result = await BookmarkMethod().getBookmarkList(userInfo['id']);
+      setState(() {
+        bookmarks = result;
       });
     } catch (e) {
       dataPrint(text: e);
@@ -67,6 +103,20 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       dataPrint(text: e);
+    }
+  }
+
+// 즐겨찾기 체크
+  void checkBookmark(String name) {
+    for (dynamic bookmark in bookmarks) {
+      if (bookmark['location_kr'] == name) {
+        print(searched['location_kr']);
+        // setState(() {
+        //   locationId = bookmark['location_id'];
+        //   testId = bookmark['location_id'];
+        //   testName = name;
+        // });
+      }
     }
   }
 
@@ -88,11 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void searchSubmit() async {
     setState(() {
       isSearch = true;
+      locationId = 0;
     });
 
     if (searchController.text != '') {
-      dataPrint(text: searchController.text);
+      // dataPrint(text: searchController.text);
       changeKrToEn(searchController.text);
+      checkBookmark(searchController.text);
       searchController.text = '';
     }
   }
@@ -166,10 +218,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: MediaQuery.of(context).size.height - 300,
-                    child:
-                        // 날씨 정보 카드
+                    child: Column(
+                      children: [
+                        testId != 0 && locationId == 0
+                            ? const SizedBox(
+                                child: Icon(
+                                    FluentSystemIcons.ic_fluent_heart_filled),
+                              )
+                            : const SizedBox(
+                                child: Icon(
+                                    FluentSystemIcons.ic_fluent_heart_regular),
+                              ),
                         WeatherCard(
-                            weatherData: weatherData, searched: searched))
+                            weatherData: weatherData, searched: searched),
+                      ],
+                    )
+                    // 날씨 정보 카드
+                    )
           ]),
         ),
       ),
