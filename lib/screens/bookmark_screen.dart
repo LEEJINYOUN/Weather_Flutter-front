@@ -90,16 +90,13 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   // 지역 이름 변환
-  void changeKrToEn(tapData) {
-    // Map<String, dynamic> jsonData = jsonDecode(tapData);
-    print(tapData);
-    // setState(() {
-    //    searched['id'] = tapData['location_id'] as int;
-    //   searched['location_kr'] = tapData['location_kr'];
-    //   searched['location_en'] = tapData['location_en'];
-    // });
-    // print(searched);
-    // getWeather(searched['location_en']);
+  void changeKrToEn(Map<String, String> data) {
+    setState(() {
+      searched['id'] = int.parse(data['id']!);
+      searched['location_kr'] = data['location_kr'];
+      searched['location_en'] = data['location_en'];
+    });
+    getWeather(searched['location_en']);
   }
 
   @override
@@ -144,8 +141,14 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return InkWell(
-                                        onTap: () =>
-                                            changeKrToEn('${bookmarks[index]}'),
+                                        onTap: () => changeKrToEn({
+                                              'id':
+                                                  '${bookmarks[index]['location_id']}',
+                                              'location_kr':
+                                                  '${bookmarks[index]['location_kr']}',
+                                              'location_en':
+                                                  '${bookmarks[index]['location_en']}',
+                                            }),
                                         // onTap: () => getWeather(
                                         //     '${bookmarks[index]['location_en']}'),
                                         child: Container(
@@ -190,7 +193,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                           height: MediaQuery.of(context).size.height - 300,
                           child:
                               // 날씨 정보 카드
-                              WeatherCard(weatherData: weatherData))
+                              WeatherCard(
+                                  weatherData: weatherData, searched: searched))
                 ]))));
   }
 }
