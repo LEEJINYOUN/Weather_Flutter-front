@@ -24,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getUserInfo();
+    print(userInfo);
   }
 
   // 유저 정보 가져오기
@@ -81,8 +82,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 100,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: const Image(
-                        image: AssetImage('assets/images/user_icon1.jpg')),
+                    child: Image(
+                        image: AssetImage(
+                      userInfo['image'] ?? 'assets/images/user_icon1.jpg',
+                    )),
                   ),
                 ),
                 const SizedBox(
