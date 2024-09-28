@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:weather_flutter_front/constants.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthMethod {
   final storage = const FlutterSecureStorage();
 
-  var backendUrl = BACKEND_URL();
+  var backendUrl = EnvData().backendApi();
 
   // 회원가입
   Future<dynamic> register({

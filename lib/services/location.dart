@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:weather_flutter_front/constants.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 
 class LocationMethod {
-  var backendUrl = BACKEND_URL();
+  var backendUrl = EnvData().backendApi();
 
   // 지역 리스트
   Future<dynamic> getLocationList() async {

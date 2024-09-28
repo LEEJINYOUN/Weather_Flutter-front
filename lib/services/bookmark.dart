@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:weather_flutter_front/constants.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 
 class BookmarkMethod {
-  var backendUrl = BACKEND_URL();
+  var backendUrl = EnvData().backendApi();
 
   // 유저별 즐겨찾기 목록 조회
   Future<dynamic> getBookmarks(int userId) async {

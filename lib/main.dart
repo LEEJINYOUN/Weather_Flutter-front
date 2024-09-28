@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // 메인 초기화
+  await dotenv.load(fileName: ".env"); // env 파일 경로 설정
   runApp(const MyApp());
 }
 
