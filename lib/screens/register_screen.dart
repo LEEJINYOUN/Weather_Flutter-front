@@ -92,8 +92,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
       appBar: AppBar(
+        toolbarHeight: 80,
+        titleTextStyle: const TextStyle(fontSize: 25, color: Colors.black),
         centerTitle: true,
         elevation: 5,
+        automaticallyImplyLeading: false,
         title:
             const Text("회원가입", style: TextStyle(fontWeight: FontWeight.w700)),
       ),
@@ -101,89 +104,121 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Form(
               key: formField,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 20),
-                    padding: const EdgeInsets.only(top: 20, bottom: 20),
+                  const Flexible(
+                    flex: 3,
+                    child: Center(
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage('assets/icon/sun.gif'),
+                        radius: 70,
+                      ),
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: TextFieldInput(
-                        textEditingController: emailController,
-                        hintText: '이메일',
-                        textInputType: TextInputType.text,
-                        prefixIcon: Icons.email,
-                        focusNode: emailFocus,
-                        validator: (value) =>
-                            CheckValidate().validateEmail(emailFocus, value)),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: TextFieldInput(
-                        textEditingController: nameController,
-                        hintText: '이름',
-                        textInputType: TextInputType.text,
-                        prefixIcon: Icons.person,
-                        focusNode: nameFocus,
-                        validator: (value) =>
-                            CheckValidate().validateName(nameFocus, value),
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: Column(
-                        children: [
-                          TextFieldInput(
-                              textEditingController: passwordController,
-                              hintText: '비밀번호',
+                  Flexible(
+                    flex: 7,
+                    child: Center(
+                        child: Column(
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: TextFieldInput(
+                                textEditingController: emailController,
+                                hintText: '이메일',
+                                textInputType: TextInputType.text,
+                                prefixIcon: Icons.email,
+                                focusNode: emailFocus,
+                                validator: (value) => CheckValidate()
+                                    .validateEmail(emailFocus, value))),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: TextFieldInput(
+                              textEditingController: nameController,
+                              hintText: '이름',
                               textInputType: TextInputType.text,
-                              prefixIcon: Icons.lock,
-                              focusNode: passwordFocus,
+                              prefixIcon: Icons.person,
+                              focusNode: nameFocus,
                               validator: (value) => CheckValidate()
-                                  .validatePassword(passwordFocus, value),
-                              isPass: true),
-                          if (isMatch)
-                            Container(
-                              padding: const EdgeInsets.only(top: 10, left: 15),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    message,
-                                    style: const TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 252, 105, 95),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500),
+                                  .validateName(nameFocus, value),
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Column(
+                              children: [
+                                TextFieldInput(
+                                    textEditingController: passwordController,
+                                    hintText: '비밀번호',
+                                    textInputType: TextInputType.text,
+                                    prefixIcon: Icons.lock,
+                                    focusNode: passwordFocus,
+                                    validator: (value) => CheckValidate()
+                                        .validatePassword(passwordFocus, value),
+                                    isPass: true),
+                                if (isMatch)
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, left: 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          message,
+                                          style: const TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 252, 105, 95),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                    ),
                                   )
-                                ],
+                              ],
+                            )),
+                        BlueButton(onTap: registerSubmit, text: "회원가입"),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: const Text(
+                                  "회원인가요?",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            )
-                        ],
-                      )),
-                  BlueButton(onTap: registerSubmit, text: "회원가입"),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("회원인가요?  "),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          " 로그인",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                              GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: const Text(
+                                      "로그인",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ))
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-                  )
+                      ],
+                    )),
+                  ),
                 ],
               ))),
     );
