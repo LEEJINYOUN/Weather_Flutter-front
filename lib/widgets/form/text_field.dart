@@ -35,6 +35,8 @@ class TextFieldInput extends StatelessWidget {
       style: const TextStyle(fontSize: 20),
       controller: textEditingController,
       decoration: InputDecoration(
+        errorStyle: const TextStyle(
+            fontSize: 14, color: Colors.red, fontWeight: FontWeight.w600),
         prefixIcon: GestureDetector(
           onTap: prefixOnTap,
           child: Icon(prefixIcon, color: Colors.black54),
@@ -49,8 +51,16 @@ class TextFieldInput extends StatelessWidget {
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(30),
         ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(30),
+        ),
         border: InputBorder.none,
         focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.blue, width: 2),
           borderRadius: BorderRadius.circular(30),
         ),

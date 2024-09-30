@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CheckValidate {
   // 유효성 체크 확인
   String? formCheckValidate(GlobalKey<FormState> formField) {
-    String message = '유효성 맞지 않음';
+    String message = '유효성 체크 실패! 다시 확인하세요.';
     if (formField.currentState!.validate()) {
       return null;
     } else {
