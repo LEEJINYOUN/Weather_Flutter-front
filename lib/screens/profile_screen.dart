@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getUserInfo() async {
     try {
       var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().user(token: token);
+      var getUserInfo = await AuthMethod().getUser(token: token);
       setState(() {
         userInfo = getUserInfo;
       });

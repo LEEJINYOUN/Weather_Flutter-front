@@ -16,7 +16,7 @@ class AuthMethod {
     required String password,
   }) async {
     try {
-      var url = '$backendUrl/register';
+      var url = '$backendUrl/auth/register';
       var reqBody = {'email': email, 'name': name, 'password': password};
 
       var response = await http.post(Uri.parse(url),
@@ -55,7 +55,7 @@ class AuthMethod {
     required String password,
   }) async {
     try {
-      var url = '$backendUrl/login';
+      var url = '$backendUrl/auth/login';
       var reqBody = {'email': email, 'password': password};
 
       var response = await http.post(Uri.parse(url),
@@ -99,9 +99,9 @@ class AuthMethod {
   }
 
   // 유저 정보 가져오기
-  Future<dynamic> user({required dynamic token}) async {
+  Future<dynamic> getUser({required dynamic token}) async {
     try {
-      var url = '$backendUrl/user';
+      var url = '$backendUrl/auth/getUser';
       var reqBody = {'token': token};
 
       var response = await http.post(Uri.parse(url),
@@ -121,7 +121,7 @@ class AuthMethod {
   // 로그아웃
   Future<dynamic> logout() async {
     try {
-      var url = '$backendUrl/logout';
+      var url = '$backendUrl/auth/logout';
 
       var response = await http.post(
         Uri.parse(url),

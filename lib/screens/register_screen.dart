@@ -92,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: 70,
         titleTextStyle: const TextStyle(fontSize: 25, color: Colors.black),
         centerTitle: true,
         elevation: 5,
