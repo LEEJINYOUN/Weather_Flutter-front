@@ -4,6 +4,7 @@ import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/button/blue_button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -65,12 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 5,
-          title:
-              const Text("프로필", style: TextStyle(fontWeight: FontWeight.w700)),
-        ),
+        appBar: const AppBarField(title: '프로필'),
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.only(top: 20, bottom: 10),

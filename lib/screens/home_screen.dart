@@ -7,6 +7,7 @@ import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -177,11 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(49, 232, 232, 232),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 5,
-          title: const Text("홈", style: TextStyle(fontWeight: FontWeight.w700)),
-        ),
+        appBar: const AppBarField(title: '홈'),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [

@@ -5,6 +5,7 @@ import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 
 class BookmarkScreen extends StatefulWidget {
   const BookmarkScreen({super.key});
@@ -149,12 +150,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         child: Scaffold(
             backgroundColor: const Color.fromARGB(49, 232, 232, 232),
             resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-            appBar: AppBar(
-              centerTitle: true,
-              elevation: 5,
-              title: const Text("즐겨찾기",
-                  style: TextStyle(fontWeight: FontWeight.w700)),
-            ),
+            appBar: const AppBarField(title: '즐겨찾기'),
             body: SingleChildScrollView(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
