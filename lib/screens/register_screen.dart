@@ -30,8 +30,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final formField = GlobalKey<FormState>();
 
   // 변수
-  String message = '';
-  bool isMatch = false;
+  String errorTitle = '';
+  String errorDescription = '';
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
@@ -46,8 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void registerSubmit() async {
     // db 유효성 초기화
     setState(() {
-      isMatch = false;
-      message = '';
+      errorTitle = '';
+      errorDescription = '';
     });
 
     // 유효성 체크
@@ -62,23 +62,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: passwordController.text);
 
         if (result['statusCode'] == 201) {
-          // 회원가입 성공일 경우
-          dataPrint(text: '회원가입 성공!');
-
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const LoginScreen(),
             ),
           );
         } else {
-          // 회원가입 실패일 경우
-          dataPrint(text: result['data']);
-
           // db 유효성 체크
           setState(() {
-            isMatch = true;
-            message = result['data'];
+            errorTitle = result['data']['objectOrError'];
+            errorDescription = result['data']['descriptionOrOptions'];
           });
+
+          // 알림창
+          dialogBuilder(context, errorTitle, errorDescription);
         }
       } catch (e) {
         dataPrint(text: e);
@@ -86,6 +83,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       dataPrint(text: isCheckValidate);
     }
+  }
+
+  // 알림창 모달
+  Future<void> dialogBuilder(
+      BuildContext context, String errorTitle, String errorDescription) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(errorTitle),
+            content: Text(errorDescription),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge),
+                child: const Text(
+                  '다시 시도',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -145,25 +168,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     validator: (value) => CheckValidate()
                                         .validatePassword(passwordFocus, value),
                                     isPass: true),
-                                if (isMatch)
-                                  Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, left: 15),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          message,
-                                          style: const TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 252, 105, 95),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
                               ],
                             )),
                         BlueButton(onTap: registerSubmit, text: "회원가입"),

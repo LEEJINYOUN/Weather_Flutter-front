@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 
+// ignore: must_be_immutable
 class LogoField extends StatelessWidget {
   // 변수
   final String name;

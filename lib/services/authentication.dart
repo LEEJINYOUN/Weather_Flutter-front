@@ -27,23 +27,12 @@ class AuthMethod {
 
       var jsonResponse = jsonDecode(response.body);
 
-      if (response.statusCode == 201) {
-        // 회원가입 성공
-        Map<String, dynamic> registerData = {
-          "data": jsonResponse,
-          "statusCode": response.statusCode
-        };
+      Map<String, dynamic> registerData = {
+        "data": jsonResponse,
+        "statusCode": response.statusCode
+      };
 
-        return registerData;
-      } else {
-        // 회원가입 실패
-        Map<String, dynamic> registerData = {
-          "data": jsonResponse['message'],
-          "statusCode": response.statusCode
-        };
-
-        return registerData;
-      }
+      return registerData;
     } catch (e) {
       dataPrint(text: e);
     }
@@ -67,6 +56,11 @@ class AuthMethod {
       var jsonResponse = jsonDecode(response.body);
       var token = jsonResponse['token'];
 
+      Map<String, dynamic> userData = {
+        "data": jsonResponse,
+        "statusCode": response.statusCode
+      };
+
       if (response.statusCode == 201) {
         // 로그인 성공
 
@@ -78,18 +72,9 @@ class AuthMethod {
           await storage.deleteAll();
         }
 
-        Map<String, dynamic> userData = {
-          "data": jsonResponse,
-          "statusCode": response.statusCode
-        };
-
         return userData;
       } else {
         // 로그인 실패
-        Map<String, dynamic> userData = {
-          "data": jsonResponse['message'],
-          "statusCode": response.statusCode
-        };
 
         return userData;
       }
