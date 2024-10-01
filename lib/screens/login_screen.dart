@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
 import 'package:weather_flutter_front/screens/register_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
+import 'package:weather_flutter_front/utils/dialog.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/utils/validate.dart';
-import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
+import 'package:weather_flutter_front/widgets/button/blue_button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
@@ -64,6 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // 실패 모달 버튼
+  void failOk() {
+    Navigator.of(context).pop();
+  }
+
   // 로그인 기능
   void loginSubmit() async {
     // db 유효성 초기화
@@ -94,8 +100,14 @@ class _LoginScreenState extends State<LoginScreen> {
             errorDescription = result['data']['descriptionOrOptions'];
           });
 
-          // 알림창
-          dialogBuilder(context, errorTitle, errorDescription);
+          // 실패 알림창
+          DialogType().failDialog(
+            context,
+            titleText: errorTitle,
+            contentText: errorDescription,
+            failOk: failOk,
+            actionText: '확인',
+          );
         }
       } catch (e) {
         dataPrint(text: e);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
-import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
+import 'package:weather_flutter_front/widgets/button/blue_button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProfileScreen extends StatefulWidget {

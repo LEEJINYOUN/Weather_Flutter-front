@@ -36,7 +36,7 @@ class TextFieldInput extends StatelessWidget {
       controller: textEditingController,
       decoration: InputDecoration(
         errorStyle: const TextStyle(
-            fontSize: 14, color: Colors.red, fontWeight: FontWeight.w600),
+            fontSize: 13, color: Colors.red, fontWeight: FontWeight.w600),
         prefixIcon: GestureDetector(
           onTap: prefixOnTap,
           child: Icon(prefixIcon, color: Colors.black54),

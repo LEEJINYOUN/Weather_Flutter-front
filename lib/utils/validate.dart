@@ -15,7 +15,7 @@ class CheckValidate {
   String? validateEmail(FocusNode focusNode, String value) {
     if (value.isEmpty) {
       focusNode.requestFocus();
-      return '이메일을 입력하세요';
+      return '이메일을 입력하세요.';
     } else {
       String pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -36,7 +36,7 @@ class CheckValidate {
 
     if (value.isEmpty) {
       focusNode.requestFocus();
-      return '이름을 입력하세요';
+      return '이름을 입력하세요.';
     } else if (regExp.hasMatch(value)) {
       focusNode.requestFocus();
       return '특수문자는 이름에 포함할 수 없습니다.';
@@ -53,12 +53,12 @@ class CheckValidate {
 
     if (value.isEmpty) {
       focusNode.requestFocus();
-      return '비밀번호를 입력하세요';
+      return '비밀번호를 입력하세요.';
     } else if (value.length < 8) {
-      return '비밀번호는 8자리 이상이어야 합니다';
+      return '비밀번호는 8자리 이상이어야 합니다.';
     } else if (!regExp.hasMatch(value)) {
       focusNode.requestFocus();
-      return '특수문자, 문자, 숫자 포함 8자 이상 15자 이내로 입력하세요.';
+      return '특수문자, 문자, 숫자를 포함한 8자 이상 입력하세요.';
     } else {
       return null;
     }

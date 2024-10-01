@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
+import 'package:weather_flutter_front/utils/dialog.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/utils/validate.dart';
-import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
+import 'package:weather_flutter_front/widgets/button/blue_button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:weather_flutter_front/widgets/icon/logo_field.dart';
@@ -42,6 +43,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     passwordController.dispose();
   }
 
+  // 성공 모달 버튼
+  void successOk() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
+  }
+
+  // 실패 모달 버튼
+  void failOk() {
+    Navigator.of(context).pop();
+  }
+
   // 회원가입 기능
   void registerSubmit() async {
     // db 유효성 초기화
@@ -62,10 +77,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: passwordController.text);
 
         if (result['statusCode'] == 201) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
-            ),
+          // 성공 알림창
+          DialogType().successDialog(
+            context,
+            titleText: '성공!',
+            contentText: '회원가입을 축하합니다.',
+            successOk: successOk,
+            actionText: '로그인 하러 가기',
           );
         } else {
           // db 유효성 체크
@@ -74,8 +92,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             errorDescription = result['data']['descriptionOrOptions'];
           });
 
-          // 알림창
-          dialogBuilder(context, errorTitle, errorDescription);
+          // 실패 알림창
+          DialogType().failDialog(
+            context,
+            titleText: errorTitle,
+            contentText: errorDescription,
+            failOk: failOk,
+            actionText: '확인',
+          );
         }
       } catch (e) {
         dataPrint(text: e);
@@ -83,32 +107,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       dataPrint(text: isCheckValidate);
     }
-  }
-
-  // 알림창 모달
-  Future<void> dialogBuilder(
-      BuildContext context, String errorTitle, String errorDescription) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(errorTitle),
-            content: Text(errorDescription),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                    textStyle: Theme.of(context).textTheme.labelLarge),
-                child: const Text(
-                  '다시 시도',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-            ],
-          );
-        });
   }
 
   @override
