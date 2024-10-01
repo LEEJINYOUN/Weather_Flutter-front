@@ -8,4 +8,8 @@ class EnvData {
   String weatherApiKey() {
     return dotenv.env['WEATHER_API_KEY']!;
   }
+
+  String iconsUrl() {
+    return dotenv.env['SIRV_URL']!;
+  }
 }

@@ -7,6 +7,8 @@ import 'package:weather_flutter_front/utils/validate.dart';
 import 'package:weather_flutter_front/widgets/button/blue_Button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
+import 'package:weather_flutter_front/widgets/icon/logo_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -111,28 +113,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: AppBar(
-          toolbarHeight: 70,
-          titleTextStyle: const TextStyle(fontSize: 25, color: Colors.black),
-          centerTitle: true,
-          elevation: 5,
-          automaticallyImplyLeading: false,
-          title:
-              const Text("로그인", style: TextStyle(fontWeight: FontWeight.w700)),
-        ),
+        appBar: const AppBarField(title: '로그인'),
         body: SafeArea(
             child: Form(
                 key: formField,
                 child: Column(
                   children: [
-                    const Flexible(
+                    Flexible(
                       flex: 3,
-                      child: Center(
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/icon/sun.gif'),
-                          radius: 70,
-                        ),
-                      ),
+                      child: Center(child: LogoField(name: 'sun')),
                     ),
                     Flexible(
                       flex: 7,
