@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/screens/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // 메인 초기화
+  await dotenv.load(fileName: ".env"); // env 파일 경로 설정
   runApp(const MyApp());
 }
 
@@ -9,13 +13,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const Center(child: Text('테스트')),
-    );
+    // BottomNavBar 불러오기
+    return const MaterialApp(
+        debugShowCheckedModeBanner: false, // 디버그 배너 삭제
+        home: LoginScreen()); // 기본 화면
   }
 }
