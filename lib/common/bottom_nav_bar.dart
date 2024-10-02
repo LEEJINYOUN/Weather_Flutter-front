@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:weather_flutter_front/screens/bookmark_screen.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
-import 'package:weather_flutter_front/screens/login_screen.dart';
-import 'package:weather_flutter_front/screens/register_screen.dart';
+import 'package:weather_flutter_front/screens/profile_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -25,10 +25,9 @@ class BottomNavBarContainer extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBarContainer> {
   // 하단 메뉴 리스트
   final appScreens = [
-    const HomeScreen(), // 홈 스크린
-    const Center(child: Text('Bookmark')),
-    const Center(child: Text('Profile')),
-    const LoginScreen(),
+    const HomeScreen(),
+    const BookmarkScreen(),
+    const ProfileScreen(),
   ];
 
   // 선택 인덱스 초기화
@@ -51,6 +50,7 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
             onTap: _onItemTapped,
             selectedItemColor: Colors.blueGrey,
             unselectedItemColor: const Color(0xff526400),
+            showUnselectedLabels: false,
             showSelectedLabels: false,
             items: const [
               BottomNavigationBarItem(
@@ -65,12 +65,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
                   activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
                   label: 'Profile'),
-              BottomNavigationBarItem(
-                  icon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_regular),
-                  activeIcon:
-                      Icon(FluentSystemIcons.ic_fluent_person_accounts_filled),
-                  label: 'Login'),
             ]));
   }
 }

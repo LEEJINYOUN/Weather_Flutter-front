@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/common/bottom_nav_bar.dart';
+import 'package:weather_flutter_front/screens/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // 메인 초기화
+  await dotenv.load(fileName: ".env"); // env 파일 경로 설정
   runApp(const MyApp());
 }
 
@@ -13,6 +16,6 @@ class MyApp extends StatelessWidget {
     // BottomNavBar 불러오기
     return const MaterialApp(
         debugShowCheckedModeBanner: false, // 디버그 배너 삭제
-        home: BottomNavBar()); // 기본 화면
+        home: LoginScreen()); // 기본 화면
   }
 }
