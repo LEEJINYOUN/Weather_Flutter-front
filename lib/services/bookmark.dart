@@ -62,18 +62,21 @@ class BookmarkMethod {
   }
 
   // 즐겨찾기 추가 및 삭제
-  Future<dynamic> editBookmark(
-      {required int userId,
-      required int locationId,
-      required String locationKr,
-      required String locationEn}) async {
+  Future<dynamic> editBookmark({
+    required int userId,
+    required int locationId,
+    required String locationKr,
+    required String locationEn,
+    required int imageNumber,
+  }) async {
     try {
       var url = '$backendUrl/bookmark/$userId';
 
       var reqBody = {
         'location_id': locationId,
         'location_kr': locationKr,
-        'location_en': locationEn
+        'location_en': locationEn,
+        'image_number': imageNumber,
       };
       var response = await http.post(Uri.parse(url),
           headers: {

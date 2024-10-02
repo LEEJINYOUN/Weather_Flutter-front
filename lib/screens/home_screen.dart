@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/services/location.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
@@ -23,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
 
+  // cdn 주소
+  var imagesUrl = EnvData().iconsUrl();
+
   // 변수
   Map<String, dynamic> userInfo = {};
   dynamic locations;
@@ -33,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'location_en': "",
   };
   bool isBookmark = false;
+  int imageNumber = 0;
 
   // state 진입시 함수 실행
   @override
@@ -144,13 +151,18 @@ class _HomeScreenState extends State<HomeScreen> {
   // 즐겨찾기 기능
   void bookmarkIconClick() async {
     try {
+      // 랜덤 숫자
+      setState(() {
+        imageNumber = Random().nextInt(5) + 1;
+      });
+
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
-        userId: userInfo['id'],
-        locationId: searched['id'],
-        locationKr: searched['location_kr'],
-        locationEn: searched['location_en'],
-      );
+          userId: userInfo['id'],
+          locationId: searched['id'],
+          locationKr: searched['location_kr'],
+          locationEn: searched['location_en'],
+          imageNumber: imageNumber);
 
       if (result != true) {
         setState(() {
@@ -169,10 +181,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage('assets/images/bg_image1.jpg'), // 배경 이미지
+          image: NetworkImage('$imagesUrl/images/bg_image1.jpg'), // 배경 이미지
         ),
       ),
       child: Scaffold(

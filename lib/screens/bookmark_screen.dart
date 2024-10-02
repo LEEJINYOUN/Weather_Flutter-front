@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/weather.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -21,6 +22,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
 
+  // cdn 주소
+  var imagesUrl = EnvData().iconsUrl();
+
   // 변수
   Map<String, dynamic> userInfo = {};
   dynamic bookmarks;
@@ -31,6 +35,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     'id': 0,
     'location_kr': "",
     'location_en': "",
+    'imageNumber': 0,
   };
   bool isBookmark = true;
 
@@ -110,6 +115,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       searched['id'] = int.parse(data['id']!);
       searched['location_kr'] = data['location_kr'];
       searched['location_en'] = data['location_en'];
+      searched['imageNumber'] = data['image_number'];
     });
     getBookmark();
     getWeather(searched['location_en']);
@@ -124,6 +130,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         locationId: searched['id'],
         locationKr: searched['location_kr'],
         locationEn: searched['location_en'],
+        imageNumber: int.parse(searched['imageNumber']),
       );
 
       if (result == true) {
@@ -138,13 +145,22 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
+  // 리스트 제목 색 변환
+  dynamic textColor(int number) {
+    if (number == 1 || number == 2) {
+      return Colors.white;
+    } else {
+      return Colors.black;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: AssetImage('assets/images/bg_image1.jpg'), // 배경 이미지
+            image: NetworkImage('$imagesUrl/images/bg_image1.jpg'), // 배경 이미지
           ),
         ),
         child: Scaffold(
@@ -182,23 +198,26 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                                   '${bookmarks[index]['location_kr']}',
                                               'location_en':
                                                   '${bookmarks[index]['location_en']}',
+                                              'image_number':
+                                                  '${bookmarks[index]['image_number']}',
                                             }),
                                         child: Container(
                                             margin: const EdgeInsets.only(
                                                 left: 10, right: 10),
                                             width: 120,
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: AssetImage(
-                                                    'assets/images/bg_image2.jpg'), // 배경 이미지
-                                              ),
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                      '$imagesUrl/images/bg_image${bookmarks[index]['image_number']}.jpg')),
                                             ),
                                             child: Center(
                                                 child: Text(
                                               '${bookmarks[index]['location_kr']}',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
+                                              style: TextStyle(
+                                                  color: textColor(
+                                                      bookmarks[index]
+                                                          ['image_number']),
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.w600),
                                             ))));
