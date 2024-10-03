@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
@@ -8,9 +7,9 @@ import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 변수
   Map<String, dynamic> userInfo = {};
-  dynamic locations;
+  List<dynamic> locations = [];
   Map<String, dynamic> weatherData = {};
   Map<String, dynamic> searched = {
     'id': 0,
@@ -40,20 +39,21 @@ class _HomeScreenState extends State<HomeScreen> {
   };
   bool isBookmark = false;
   int imageNumber = 0;
+  String? selectedValue;
 
   // state 진입시 함수 실행
   @override
   void initState() {
-    super.initState();
     getLocations();
     getUserInfo();
+    super.initState();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
-    super.dispose();
     searchController.dispose();
+    super.dispose();
   }
 
   // 유저 정보 가져오기
@@ -109,43 +109,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 지역 이름 변환
-  void changeKrToEn(String name) {
-    for (dynamic location in locations) {
-      if (location['location_kr'] == name) {
-        setState(() {
-          searched['id'] = location['id'];
-          searched['location_kr'] = location['location_kr'];
-          searched['location_en'] = location['location_en'];
-        });
-      }
+  // 이름으로 지역 검색
+  void getLocationName(name) async {
+    try {
+      dynamic result = await LocationMethod().getLocationByName(name);
+      setState(() {
+        searched['id'] = result['id'];
+        searched['location_kr'] = result['location_kr'];
+        searched['location_en'] = result['location_en'];
+      });
+      getBookmark();
+      getWeather(searched['location_en']);
+      setState(() {
+        isBookmark = false;
+      });
+    } catch (e) {
+      dataPrint(text: e);
+      rethrow;
     }
-    getBookmark();
-    getWeather(searched['location_en']);
-  }
-
-  // 날씨 검색
-  void searchSubmit() async {
-    if (searchController.text != '') {
-      changeKrToEn(searchController.text);
-      searchController.text = '';
-    }
-
-    setState(() {
-      isBookmark = false;
-    });
-  }
-
-  // 검색 초기화
-  void resetSubmit() {
-    weatherData = {};
-    dataPrint(text: '초기화');
-    setState(() {
-      searched['id'] = 0;
-      searched['location_kr'] = '';
-      searched['location_en'] = '';
-      isBookmark = false;
-    });
   }
 
   // 즐겨찾기 기능
@@ -198,20 +179,99 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // 검색 컨테이너
                 Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 80,
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: 40,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     margin: const EdgeInsets.symmetric(vertical: 15),
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child:
-                        // 검색 필드
-                        TextFieldInput(
-                      textEditingController: searchController,
-                      textInputType: TextInputType.text,
-                      hintText: '지역 검색',
-                      prefixOnTap: searchSubmit,
-                      prefixIcon: Icons.search,
-                      suffixOnTap: resetSubmit,
-                      suffixIcon: Icons.close,
+                    child: Container(
+                      // 검색 필드
+                      color: Colors.white,
+                      alignment: Alignment.center,
+                      child: DropdownButtonHideUnderline(
+                          child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: const Text(
+                          '검색',
+                          style: TextStyle(color: Colors.black45, fontSize: 18),
+                        ),
+                        items: locations
+                            .map((item) => DropdownMenuItem(
+                                  value: item["location_kr"].toString(),
+                                  child: Text(
+                                    item["location_kr"].toString(),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        value: selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value;
+                          });
+                          getLocationName(value);
+                        },
+                        buttonStyleData: const ButtonStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          height: 300,
+                          width: 200,
+                        ),
+                        dropdownStyleData: const DropdownStyleData(
+                          maxHeight: 200,
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                        ),
+                        dropdownSearchData: DropdownSearchData(
+                          searchController: searchController,
+                          searchInnerWidgetHeight: 20,
+                          searchInnerWidget: Container(
+                            height: 50,
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 4,
+                              right: 8,
+                              left: 8,
+                            ),
+                            child: TextFormField(
+                              expands: true,
+                              maxLines: null,
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    getLocationName(searchController.text
+                                        .replaceAll(RegExp('\\s'), ""));
+                                  },
+                                  child: const Icon(Icons.search,
+                                      color: Colors.black54),
+                                ),
+                                hintText: '지역 검색',
+                                hintStyle: const TextStyle(fontSize: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                          searchMatchFn: (item, searchValue) {
+                            return item.value.toString().contains(searchValue);
+                          },
+                        ),
+                        onMenuStateChange: (isOpen) {
+                          if (!isOpen) {
+                            searchController.clear();
+                          }
+                        },
+                      )),
                     )),
               ],
             ),
