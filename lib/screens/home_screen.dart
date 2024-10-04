@@ -291,17 +291,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: MediaQuery.of(context).size.height - 300,
-                    child: Column(
-                      children: [
+                    child:
+                        // 날씨 정보 카드
                         WeatherCard(
                             weatherData: weatherData,
                             searched: searched,
                             isBookmark: isBookmark,
-                            bookmarkIconClick: bookmarkIconClick),
-                      ],
-                    )
-                    // 날씨 정보 카드
-                    )
+                            bookmarkIconClick: bookmarkIconClick))
           ]),
         ),
       ),

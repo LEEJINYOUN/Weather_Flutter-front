@@ -259,7 +259,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                         )
                       : // 날씨 정보 있는 경우
                       SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: MediaQuery.of(context).size.height - 300,
                           child:
                               // 날씨 정보 카드
@@ -268,86 +268,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   searched: searched,
                                   isBookmark: isBookmark,
                                   bookmarkIconClick: bookmarkIconClick)),
-                  Container(
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      margin: const EdgeInsets.only(top: 5, bottom: 20),
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 5, bottom: 10),
-                            child: const Text(
-                              '- 오늘의 옷 추천 -',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                itemCount: clothesArr.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.7),
-                                            blurRadius: 5.0,
-                                            spreadRadius: -2.0,
-                                            offset: const Offset(2, 7),
-                                          )
-                                        ]),
-                                    margin: const EdgeInsets.only(
-                                        left: 10, right: 10),
-                                    alignment: Alignment.center,
-                                    width: 150,
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          '${clothesArr[index]["url"]}',
-                                          width: 70,
-                                          height: 70,
-                                        ),
-                                        Text('${clothesArr[index]["name"]}')
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          )
-                        ],
-                      )
-                      // ListView.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      // padding: const EdgeInsets.only(top: 5, bottom: 5),
-                      // itemCount: clothesArr.length,
-                      //     itemBuilder: (BuildContext context, int index) {
-                      //       return Container(
-                      // margin: const EdgeInsets.only(left: 10, right: 10),
-                      // alignment: Alignment.center,
-                      // width: 150,
-                      // color: Colors.red,
-                      // child: Column(
-                      //   children: [
-                      // Image.asset(
-                      //   '${clothesArr[index]["url"]}',
-                      //   width: 70,
-                      //   height: 70,
-                      // ),
-                      // Text('${clothesArr[index]["name"]}')
-                      //   ],
-                      // ),
-                      //       );
-                      //     }),
-                      )
                 ]))));
   }
 }
