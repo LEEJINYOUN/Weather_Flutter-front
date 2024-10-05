@@ -154,6 +154,25 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
+  List<dynamic> clothesArr = [
+    {
+      "name": "털모자",
+      "url": "assets/images/clothes/털모자.jpg",
+    },
+    {
+      "name": "코트",
+      "url": "assets/images/clothes/코트.jpg",
+    },
+    {
+      "name": "구두",
+      "url": "assets/images/clothes/구두.jpg",
+    },
+    {
+      "name": "하이힐",
+      "url": "assets/images/clothes/하이힐.jpg",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -240,7 +259,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                         )
                       : // 날씨 정보 있는 경우
                       SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: MediaQuery.of(context).size.height - 300,
                           child:
                               // 날씨 정보 카드
@@ -248,7 +267,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   weatherData: weatherData,
                                   searched: searched,
                                   isBookmark: isBookmark,
-                                  bookmarkIconClick: bookmarkIconClick))
+                                  bookmarkIconClick: bookmarkIconClick)),
                 ]))));
   }
 }
