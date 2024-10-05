@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/models/location_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/weather.dart';
@@ -9,7 +10,7 @@ import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:searchfield/searchfield.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 변수
   Map<String, dynamic> userInfo = {};
-  List<dynamic> locations = [];
+  final List<LocationModel> locations = [];
   Map<String, dynamic> weatherData = {};
   Map<String, dynamic> searched = {
     'id': 0,
@@ -74,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       dynamic result = await LocationMethod().getLocationList();
       setState(() {
-        locations = result;
+        result.forEach((element) {
+          locations.add(LocationModel.fromJson(element));
+        });
       });
     } catch (e) {
       dataPrint(text: e);
@@ -179,100 +182,56 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // 검색 컨테이너
                 Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: 40,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    margin: const EdgeInsets.symmetric(vertical: 15),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Container(
-                      // 검색 필드
-                      color: Colors.white,
-                      alignment: Alignment.center,
-                      child: DropdownButtonHideUnderline(
-                          child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: const Text(
-                          '검색',
-                          style: TextStyle(color: Colors.black45, fontSize: 18),
-                        ),
-                        items: locations
-                            .map((item) => DropdownMenuItem(
-                                  value: item["location_kr"].toString(),
-                                  child: Text(
-                                    item["location_kr"].toString(),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedValue,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedValue = value;
-                          });
-                          getLocationName(value);
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 300,
-                          width: 200,
-                        ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: searchController,
-                          searchInnerWidgetHeight: 20,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
-                            ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: searchController,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    getLocationName(searchController.text
-                                        .replaceAll(RegExp('\\s'), ""));
-                                  },
-                                  child: const Icon(Icons.search,
-                                      color: Colors.black54),
-                                ),
-                                hintText: '지역 검색',
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: 40,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  margin: const EdgeInsets.symmetric(vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child:
+                      // 검색
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SearchField<LocationModel>(
+                            maxSuggestionsInViewPort: 5,
+                            itemHeight: 80,
+                            hint: '지역 선택',
+                            suggestionsDecoration: SuggestionDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(8.0),
+                                bottomRight: Radius.circular(8),
+                              ),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.5),
                               ),
                             ),
-                          ),
-                          searchMatchFn: (item, searchValue) {
-                            return item.value.toString().contains(searchValue);
-                          },
-                        ),
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            searchController.clear();
-                          }
-                        },
-                      )),
-                    )),
+                            suggestionItemDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                shape: BoxShape.rectangle,
+                                border: Border.all(
+                                    color: Colors.transparent,
+                                    style: BorderStyle.solid,
+                                    width: 1.0)),
+                            searchInputDecoration: SearchInputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.withOpacity(0.2),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              border: const OutlineInputBorder(),
+                            ),
+                            marginColor: Colors.grey.shade300,
+                            suggestions: locations
+                                .map((e) => SearchFieldListItem<LocationModel>(
+                                    e.location_kr,
+                                    child: LocationTile(location: e)))
+                                .toList(),
+                          )),
+                ),
               ],
             ),
             weatherData.isEmpty
@@ -302,5 +261,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+}
+
+class LocationTile extends StatelessWidget {
+  final LocationModel location;
+
+  const LocationTile({super.key, required this.location});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          print({
+            'kr': location.location_kr,
+            'en': location.location_en,
+          });
+        },
+        child: ListTile(
+          title: Text(location.location_kr),
+          subtitle: Text(location.location_en),
+        ));
   }
 }
