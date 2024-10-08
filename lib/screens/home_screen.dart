@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/models/clothes_model.dart';
 import 'package:weather_flutter_front/models/location_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
+import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
@@ -41,12 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isBookmark = false;
   int imageNumber = 0;
   String? selectedValue;
+  final List<ClothesModel> clothes = [];
+  dynamic temp = 0;
 
   // state 진입시 함수 실행
   @override
   void initState() {
     getLocations();
     getUserInfo();
+    // 임시
+    getWeather("Daegu");
     super.initState();
   }
 
@@ -91,7 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
         weatherData = result;
+        temp =
+            double.parse((result["main"]["temp"] - 273.15).toStringAsFixed(1));
       });
+      getClothesTemp();
     } catch (e) {
       dataPrint(text: e);
     }
@@ -159,6 +168,23 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       dataPrint(text: e);
+    }
+  }
+
+  // 기온 별 옷 리스트 가져오기
+  void getClothesTemp() async {
+    if (weatherData.isNotEmpty) {
+      try {
+        dynamic result = await ClothesMethod().getClothesByTemp(temp);
+        setState(() {
+          result.forEach((element) {
+            clothes.add(ClothesModel.fromJson(element));
+          });
+        });
+      } catch (e) {
+        dataPrint(text: e);
+        rethrow;
+      }
     }
   }
 
@@ -274,7 +300,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             weatherData: weatherData,
                             searched: searched,
                             isBookmark: isBookmark,
-                            bookmarkIconClick: bookmarkIconClick))
+                            bookmarkIconClick: bookmarkIconClick,
+                            clothes: clothes))
           ]),
         ),
       ),

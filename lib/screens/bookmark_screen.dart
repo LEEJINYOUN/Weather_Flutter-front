@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/models/clothes_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
+import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
@@ -38,6 +40,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     'imageNumber': 0,
   };
   bool isBookmark = true;
+  final List<ClothesModel> clothes = [];
+  dynamic temp = 0;
 
   // state 진입시 함수 실행
   @override
@@ -88,7 +92,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
         weatherData = result;
+        temp =
+            double.parse((result["main"]["temp"] - 273.15).toStringAsFixed(1));
       });
+      getClothesTemp();
     } catch (e) {
       dataPrint(text: e);
     }
@@ -154,24 +161,22 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
-  List<dynamic> clothesArr = [
-    {
-      "name": "털모자",
-      "url": "assets/images/clothes/털모자.jpg",
-    },
-    {
-      "name": "코트",
-      "url": "assets/images/clothes/코트.jpg",
-    },
-    {
-      "name": "구두",
-      "url": "assets/images/clothes/구두.jpg",
-    },
-    {
-      "name": "하이힐",
-      "url": "assets/images/clothes/하이힐.jpg",
-    },
-  ];
+  // 기온 별 옷 리스트 가져오기
+  void getClothesTemp() async {
+    if (weatherData.isNotEmpty) {
+      try {
+        dynamic result = await ClothesMethod().getClothesByTemp(temp);
+        setState(() {
+          result.forEach((element) {
+            clothes.add(ClothesModel.fromJson(element));
+          });
+        });
+      } catch (e) {
+        dataPrint(text: e);
+        rethrow;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +272,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   weatherData: weatherData,
                                   searched: searched,
                                   isBookmark: isBookmark,
-                                  bookmarkIconClick: bookmarkIconClick)),
+                                  bookmarkIconClick: bookmarkIconClick,
+                                  clothes: clothes)),
                 ]))));
   }
 }

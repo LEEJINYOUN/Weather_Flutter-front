@@ -1,29 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/models/clothes_model.dart';
+import 'package:weather_flutter_front/utils/constant.dart';
 
 class ClothesContainer extends StatelessWidget {
-  const ClothesContainer({super.key});
+  final List<ClothesModel> clothes;
+
+  const ClothesContainer({
+    super.key,
+    required this.clothes,
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> clothesArr = [
-      {
-        "name": "털모자",
-        "url": "assets/images/clothes/털모자.jpg",
-      },
-      {
-        "name": "코트",
-        "url": "assets/images/clothes/코트.jpg",
-      },
-      {
-        "name": "구두",
-        "url": "assets/images/clothes/구두.jpg",
-      },
-      {
-        "name": "하이힐",
-        "url": "assets/images/clothes/하이힐.jpg",
-      },
-    ];
-
     return Container(
         width: MediaQuery.of(context).size.width,
         height: 250,
@@ -49,7 +37,7 @@ class ClothesContainer extends StatelessWidget {
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  itemCount: clothesArr.length,
+                  itemCount: clothes.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: const EdgeInsets.only(
@@ -70,16 +58,17 @@ class ClothesContainer extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            '${clothesArr[index]["url"]}',
+                          SizedBox(
                             width: 80,
                             height: 80,
+                            child: Image.network(
+                                '${EnvData().iconsUrl()}/clothes/${clothes[index].image}'),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            '${clothesArr[index]["name"]}',
+                            clothes[index].name,
                             style: const TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w600),
                           )

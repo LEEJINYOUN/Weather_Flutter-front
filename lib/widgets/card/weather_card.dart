@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter_front/models/clothes_model.dart';
 import 'package:weather_flutter_front/utils/celsiusConversion.dart';
 import 'package:weather_flutter_front/widgets/container/clothes_container.dart';
 import 'package:weather_flutter_front/widgets/table/weather/main_info_field.dart';
@@ -11,6 +12,7 @@ class WeatherCard extends StatelessWidget {
   final dynamic searched;
   final bool isBookmark;
   final VoidCallback bookmarkIconClick;
+  final List<ClothesModel> clothes;
 
   const WeatherCard({
     super.key,
@@ -18,6 +20,7 @@ class WeatherCard extends StatelessWidget {
     this.searched,
     required this.isBookmark,
     required this.bookmarkIconClick,
+    required this.clothes,
   });
 
   @override
@@ -118,7 +121,7 @@ class WeatherCard extends StatelessWidget {
           ),
 
           // 옷 추천 정보
-          const ClothesContainer(),
+          ClothesContainer(clothes: clothes),
         ],
       ),
     );
