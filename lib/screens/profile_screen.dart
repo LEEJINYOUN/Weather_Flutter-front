@@ -25,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getUserInfo();
-    print(userInfo);
   }
 
   // 유저 정보 가져오기

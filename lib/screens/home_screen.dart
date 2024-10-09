@@ -11,8 +11,8 @@ import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
-import 'package:searchfield/searchfield.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,18 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
   // state 진입시 함수 실행
   @override
   void initState() {
+    super.initState();
     getLocations();
     getUserInfo();
-    // 임시
-    getWeather("Daegu");
-    super.initState();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
+    searchController.dispose();
   }
 
   // 유저 정보 가져오기
@@ -99,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
         weatherData = result;
         temp =
             double.parse((result["main"]["temp"] - 273.15).toStringAsFixed(1));
+        searchController.text = '';
       });
       getClothesTemp();
     } catch (e) {
@@ -188,6 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void searchClick() {
+    // print(searchController.text);
+    FocusManager.instance.primaryFocus?.unfocus();
+    getLocationName(searchController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -207,77 +212,23 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // 검색 컨테이너
                 Container(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  height: 80,
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Colors.red),
-                  ),
-
-                  // 검색
-                  child: SearchField<LocationModel>(
-                    dynamicHeight: true,
-                    showEmpty: false,
-                    controller: searchController,
-                    marginColor: Colors.blue,
-                    maxSuggestionsInViewPort: 5,
-                    searchInputDecoration: SearchInputDecoration(
-                      // suffixIcon: GestureDetector(
-                      //   onTap: () {
-                      //     getLocationName(searchController.text);
-                      //   },
-                      //   child: const Icon(Icons.search),
-                      // ),
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: 80,
+                    margin: const EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    alignment: Alignment.center,
+                    // 검색
+                    child: TextFieldInput(
+                      textEditingController: searchController,
                       hintText: '지역 검색',
-                      hintStyle:
-                          const TextStyle(color: Colors.black45, fontSize: 18),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFedf0f8),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 20,
-                      ),
-                    ),
-                    suggestionItemDecoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.rectangle,
-                        border: Border.all(
-                            color: Colors.transparent,
-                            style: BorderStyle.solid,
-                            width: 1)),
-                    suggestions: locations
-                        .map((e) => SearchFieldListItem<LocationModel>(
-                            e.location_kr,
-                            child: Text(e.location_kr)))
-                        .toList(),
-                  ),
-                ),
+                      textInputType: TextInputType.text,
+                      suffixIcon: Icons.search,
+                      suffixOnTap: searchClick,
+                    )),
               ],
             ),
-            // 검색 컨테이너
-
             weatherData.isEmpty
                 ? // 날씨 정보 없는 경우
                 const Center(
@@ -292,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : // 날씨 정보 있는 경우
                 SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.5,
+                    width: MediaQuery.of(context).size.width / 1.2,
                     height: MediaQuery.of(context).size.height - 300,
                     child:
                         // 날씨 정보 카드
