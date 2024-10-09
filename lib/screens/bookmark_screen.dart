@@ -27,17 +27,17 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // cdn 주소
   var imagesUrl = EnvData().iconsUrl();
 
-  // 변수
+  // 번역관련 변수
+  dynamic inputText = '';
+  dynamic outputText = '';
+  dynamic outputNumber = '';
+
+  // 기타 변수
   Map<String, dynamic> userInfo = {};
   dynamic bookmarks;
   int bookmarkLen = 0;
   Map<String, dynamic> weatherData = {};
   bool isBookmarkList = false;
-  Map<String, dynamic> searched = {
-    'location_kr': "",
-    'location_en': "",
-    'imageNumber': 0,
-  };
   bool isBookmark = true;
   final List<ClothesModel> clothes = [];
   dynamic temp = 0;
@@ -103,8 +103,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 즐겨찾기 지역 조회
   void getBookmark() async {
     try {
-      dynamic result = await BookmarkMethod().getBookmarkLocation(
-          userId: userInfo['id'], locationKr: searched['location_kr']);
+      dynamic result = await BookmarkMethod()
+          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
       if (result != 0) {
         setState(() {
           isBookmark = true;
@@ -115,15 +115,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
-  // 지역 이름 변환
+  // 선택한 지역 이름 번역
   void changeKrToEn(Map<String, String> data) {
     setState(() {
-      searched['location_kr'] = data['location_kr'];
-      searched['location_en'] = data['location_en'];
-      searched['imageNumber'] = data['image_number'];
+      inputText = data['location_kr'];
+      outputText = data['location_en'];
+      outputNumber = data['image_number'];
     });
     getBookmark();
-    getWeather(searched['location_en']);
+    getWeather(outputText);
   }
 
   // 즐겨찾기 기능
@@ -132,9 +132,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
         userId: userInfo['id'],
-        locationKr: searched['location_kr'],
-        locationEn: searched['location_en'],
-        imageNumber: int.parse(searched['imageNumber']),
+        locationKr: inputText,
+        locationEn: outputText,
+        imageNumber: int.parse(outputNumber),
       );
 
       if (result == true) {
@@ -149,7 +149,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
-  // 리스트 제목 색 변환
+  // 즐겨찾기 리스트 제목 색 변환
   dynamic textColor(int number) {
     if (number == 1 || number == 2) {
       return Colors.white;
@@ -265,6 +265,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               // 날씨 정보 카드
                               WeatherCard(
                                   weatherData: weatherData,
+                                  inputText: inputText,
                                   isBookmark: isBookmark,
                                   bookmarkIconClick: bookmarkIconClick,
                                   clothes: clothes)),

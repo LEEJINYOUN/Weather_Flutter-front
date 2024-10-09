@@ -57,8 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
+    searchController.dispose();
   }
 
   // 유저 정보 가져오기
