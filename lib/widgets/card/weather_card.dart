@@ -9,7 +9,7 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 class WeatherCard extends StatelessWidget {
   // 변수
   final dynamic weatherData;
-  final dynamic searched;
+  final String? inputText;
   final bool isBookmark;
   final VoidCallback bookmarkIconClick;
   final List<ClothesModel> clothes;
@@ -17,7 +17,7 @@ class WeatherCard extends StatelessWidget {
   const WeatherCard({
     super.key,
     required this.weatherData,
-    this.searched,
+    this.inputText,
     required this.isBookmark,
     required this.bookmarkIconClick,
     required this.clothes,
@@ -38,7 +38,7 @@ class WeatherCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  isBookmark
+                  isBookmark == true
                       ? IconButton(
                           icon: const Icon(
                             FluentSystemIcons.ic_fluent_heart_filled,
@@ -53,8 +53,7 @@ class WeatherCard extends StatelessWidget {
                           color: Colors.red,
                           onPressed: bookmarkIconClick,
                         ),
-                  MainInfoField(
-                      value: '${searched["location_kr"]}', fontSize: 25),
+                  MainInfoField(value: inputText, fontSize: 25),
                   Container(
                       width: 100,
                       height: 100,

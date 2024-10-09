@@ -35,9 +35,9 @@ class BookmarkMethod {
 
   // 유저별 즐겨찾기 지역 조회
   Future<dynamic> getBookmarkLocation(
-      {required int userId, required int locationId}) async {
+      {required int userId, required String locationKr}) async {
     try {
-      var url = '$backendUrl/bookmark/$userId/$locationId';
+      var url = '$backendUrl/bookmark/$userId/$locationKr';
       var response = await http.get(
         Uri.parse(url),
         headers: {
@@ -64,7 +64,6 @@ class BookmarkMethod {
   // 즐겨찾기 추가 및 삭제
   Future<dynamic> editBookmark({
     required int userId,
-    required int locationId,
     required String locationKr,
     required String locationEn,
     required int imageNumber,
@@ -73,7 +72,6 @@ class BookmarkMethod {
       var url = '$backendUrl/bookmark/$userId';
 
       var reqBody = {
-        'location_id': locationId,
         'location_kr': locationKr,
         'location_en': locationEn,
         'image_number': imageNumber,

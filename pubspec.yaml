@@ -42,6 +42,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   dropdown_button2: ^2.3.9
   searchfield: ^1.1.6
+  translator: ^1.0.0
 
 dev_dependencies:
   flutter_test:

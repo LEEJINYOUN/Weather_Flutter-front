@@ -1,18 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/models/clothes_model.dart';
-import 'package:weather_flutter_front/models/location_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
-import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
+import 'package:translator/translator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,37 +27,38 @@ class _HomeScreenState extends State<HomeScreen> {
   // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
 
-  // cdn 주소
-  var imagesUrl = EnvData().iconsUrl();
+  // 구글 번역 선언
+  final translator = GoogleTranslator();
 
-  // 변수
+  // cdn 주소
+  String imagesUrl = EnvData().iconsUrl();
+
+  // 번역관련 변수
+  String inputText = '';
+  String outputText = '';
+  String inputLanguage = 'ko';
+  String outputLanguage = 'en';
+
+  // 기타 변수
   Map<String, dynamic> userInfo = {};
-  final List<LocationModel> locations = [];
   Map<String, dynamic> weatherData = {};
-  Map<String, dynamic> searched = {
-    'id': 0,
-    'location_kr': "",
-    'location_en': "",
-  };
-  bool isBookmark = false;
   int imageNumber = 0;
-  String? selectedValue;
   final List<ClothesModel> clothes = [];
   dynamic temp = 0;
+  bool isBookmark = false;
 
   // state 진입시 함수 실행
   @override
   void initState() {
     super.initState();
-    getLocations();
     getUserInfo();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
-    super.dispose();
     searchController.dispose();
+    super.dispose();
   }
 
   // 유저 정보 가져오기
@@ -74,19 +74,31 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 지역 리스트 가져오기
-  void getLocations() async {
-    try {
-      dynamic result = await LocationMethod().getLocationList();
-      setState(() {
-        result.forEach((element) {
-          locations.add(LocationModel.fromJson(element));
-        });
-      });
-    } catch (e) {
-      dataPrint(text: e);
-      rethrow;
-    }
+  // 검색하기
+  void searchActive() {
+    translateText();
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  // 초기화
+  void resetActive() {
+    setState(() {
+      weatherData = {};
+      temp = 0;
+      searchController.text = '';
+    });
+  }
+
+  // 검색어 번역
+  Future<void> translateText() async {
+    final translated = await translator.translate(searchController.text,
+        from: inputLanguage, to: outputLanguage);
+
+    setState(() {
+      inputText = searchController.text;
+      outputText = translated.text;
+    });
+    getWeather(outputText);
   }
 
   // 날씨 정보 가져오기
@@ -100,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         searchController.text = '';
       });
       getClothesTemp();
+      getBookmark();
     } catch (e) {
       dataPrint(text: e);
     }
@@ -108,35 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
   // 즐겨찾기 지역 조회
   void getBookmark() async {
     try {
-      dynamic result = await BookmarkMethod().getBookmarkLocation(
-          userId: userInfo['id'], locationId: searched['id']);
+      dynamic result = await BookmarkMethod()
+          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
+
       if (result != 0) {
         setState(() {
           isBookmark = true;
         });
+      } else {
+        setState(() {
+          isBookmark = false;
+        });
       }
     } catch (e) {
       dataPrint(text: e);
-    }
-  }
-
-  // 이름으로 지역 검색
-  void getLocationName(name) async {
-    try {
-      dynamic result = await LocationMethod().getLocationByName(name);
-      setState(() {
-        searched['id'] = result['id'];
-        searched['location_kr'] = result['location_kr'];
-        searched['location_en'] = result['location_en'];
-      });
-      getBookmark();
-      getWeather(searched['location_en']);
-      setState(() {
-        isBookmark = false;
-      });
-    } catch (e) {
-      dataPrint(text: e);
-      rethrow;
     }
   }
 
@@ -151,9 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
           userId: userInfo['id'],
-          locationId: searched['id'],
-          locationKr: searched['location_kr'],
-          locationEn: searched['location_en'],
+          locationKr: inputText,
+          locationEn: outputText,
           imageNumber: imageNumber);
 
       if (result != true) {
@@ -187,12 +184,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void searchClick() {
-    // print(searchController.text);
-    FocusManager.instance.primaryFocus?.unfocus();
-    getLocationName(searchController.text);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -224,8 +215,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       textEditingController: searchController,
                       hintText: '지역 검색',
                       textInputType: TextInputType.text,
-                      suffixIcon: Icons.search,
-                      suffixOnTap: searchClick,
+                      prefixIcon: Icons.search,
+                      prefixOnTap: searchActive,
+                      suffixIcon: Icons.close,
+                      suffixOnTap: resetActive,
                     )),
               ],
             ),
@@ -249,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         // 날씨 정보 카드
                         WeatherCard(
                             weatherData: weatherData,
-                            searched: searched,
+                            inputText: inputText,
                             isBookmark: isBookmark,
                             bookmarkIconClick: bookmarkIconClick,
                             clothes: clothes))

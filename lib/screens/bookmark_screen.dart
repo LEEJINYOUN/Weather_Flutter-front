@@ -34,7 +34,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   Map<String, dynamic> weatherData = {};
   bool isBookmarkList = false;
   Map<String, dynamic> searched = {
-    'id': 0,
     'location_kr': "",
     'location_en': "",
     'imageNumber': 0,
@@ -105,7 +104,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   void getBookmark() async {
     try {
       dynamic result = await BookmarkMethod().getBookmarkLocation(
-          userId: userInfo['id'], locationId: searched['id']);
+          userId: userInfo['id'], locationKr: searched['location_kr']);
       if (result != 0) {
         setState(() {
           isBookmark = true;
@@ -119,7 +118,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 지역 이름 변환
   void changeKrToEn(Map<String, String> data) {
     setState(() {
-      searched['id'] = int.parse(data['id']!);
       searched['location_kr'] = data['location_kr'];
       searched['location_en'] = data['location_en'];
       searched['imageNumber'] = data['image_number'];
@@ -134,7 +132,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
         userId: userInfo['id'],
-        locationId: searched['id'],
         locationKr: searched['location_kr'],
         locationEn: searched['location_en'],
         imageNumber: int.parse(searched['imageNumber']),
@@ -216,8 +213,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                       (BuildContext context, int index) {
                                     return InkWell(
                                         onTap: () => changeKrToEn({
-                                              'id':
-                                                  '${bookmarks[index]['location_id']}',
                                               'location_kr':
                                                   '${bookmarks[index]['location_kr']}',
                                               'location_en':
@@ -270,7 +265,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               // 날씨 정보 카드
                               WeatherCard(
                                   weatherData: weatherData,
-                                  searched: searched,
                                   isBookmark: isBookmark,
                                   bookmarkIconClick: bookmarkIconClick,
                                   clothes: clothes)),
