@@ -114,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-      appBar: const AppBarField(title: '회원가입'),
+      appBar: const AppBarField(title: '회원가입', isActions: false),
       body: SafeArea(
           child: Form(
               key: formField,

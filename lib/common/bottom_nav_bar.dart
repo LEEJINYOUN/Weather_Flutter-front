@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:weather_flutter_front/screens/bookmark_screen.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
-import 'package:weather_flutter_front/screens/profile_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -27,7 +26,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   final appScreens = [
     const HomeScreen(),
     const BookmarkScreen(),
-    const ProfileScreen(),
   ];
 
   // 선택 인덱스 초기화
@@ -61,10 +59,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   icon: Icon(FluentSystemIcons.ic_fluent_heart_regular),
                   activeIcon: Icon(FluentSystemIcons.ic_fluent_heart_filled),
                   label: 'Bookmark'),
-              BottomNavigationBarItem(
-                  icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
-                  activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
-                  label: 'Profile'),
             ]));
   }
 }

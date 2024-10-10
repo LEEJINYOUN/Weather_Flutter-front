@@ -148,7 +148,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: const AppBarField(title: '로그인'),
+        appBar: const AppBarField(
+          title: '로그인',
+          isActions: false,
+        ),
         body: SafeArea(
             child: Form(
                 key: formField,

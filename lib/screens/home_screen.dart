@@ -173,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         dynamic result = await ClothesMethod().getClothesByTemp(temp);
         setState(() {
+          clothes.clear();
           result.forEach((element) {
             clothes.add(ClothesModel.fromJson(element));
           });
@@ -196,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(49, 232, 232, 232),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: const AppBarField(title: '홈'),
+        appBar: const AppBarField(title: '홈', isActions: true),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
