@@ -9,6 +9,7 @@ import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
+import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
 
 class BookmarkScreen extends StatefulWidget {
   const BookmarkScreen({super.key});
@@ -193,83 +194,112 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                  // 즐겨찾기 리스트
-                  Column(
-                    children: [
-                      Text('즐겨찾기 개수 ( $bookmarkLen )',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 20)),
-                      Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 80,
-                          margin: const EdgeInsets.symmetric(vertical: 15),
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: isBookmarkList
-                              ? ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  padding:
-                                      const EdgeInsets.only(top: 5, bottom: 5),
-                                  itemCount: bookmarks.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return InkWell(
-                                        onTap: () => changeKrToEn({
-                                              'location_kr':
-                                                  '${bookmarks[index]['location_kr']}',
-                                              'location_en':
-                                                  '${bookmarks[index]['location_en']}',
-                                              'image_number':
-                                                  '${bookmarks[index]['image_number']}',
-                                            }),
-                                        child: Container(
-                                            margin: const EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            width: 120,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: NetworkImage(
-                                                      '$imagesUrl/images/bg_image${bookmarks[index]['image_number']}.jpg')),
-                                            ),
-                                            child: Center(
-                                                child: Text(
-                                              '${bookmarks[index]['location_kr']}',
-                                              style: TextStyle(
-                                                  color: textColor(
-                                                      bookmarks[index]
-                                                          ['image_number']),
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600),
-                                            ))));
-                                  })
-                              : null)
-                    ],
+                  Container(
+                    // 상단 컨테이너
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.red)),
+                    child: Column(
+                      children: [
+                        // 즐겨찾기 개수
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 5, left: 20),
+                                child: Text(
+                                  '즐겨찾기 ( $bookmarkLen )',
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                )),
+                          ],
+                        ),
+                        // 즐겨찾기 리스트
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 80,
+                            margin: const EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: isBookmarkList
+                                ? ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
+                                    itemCount: bookmarks.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return InkWell(
+                                          onTap: () => changeKrToEn({
+                                                'location_kr':
+                                                    '${bookmarks[index]['location_kr']}',
+                                                'location_en':
+                                                    '${bookmarks[index]['location_en']}',
+                                                'image_number':
+                                                    '${bookmarks[index]['image_number']}',
+                                              }),
+                                          child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              width: 120,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        '$imagesUrl/images/bg_image${bookmarks[index]['image_number']}.jpg')),
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                '${bookmarks[index]['location_kr']}',
+                                                style: TextStyle(
+                                                    color: textColor(
+                                                        bookmarks[index]
+                                                            ['image_number']),
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ))));
+                                    })
+                                : null)
+                      ],
+                    ),
                   ),
-                  weatherData.isEmpty
-                      ? // 날씨 정보 없는 경우
-                      const Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                '선택하세요.',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        )
-                      : // 날씨 정보 있는 경우
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          height: MediaQuery.of(context).size.height - 300,
-                          child:
-                              // 날씨 정보 카드
-                              WeatherCard(
-                                  weatherData: weatherData,
-                                  inputText: inputText,
-                                  isBookmark: isBookmark,
-                                  bookmarkIconClick: bookmarkIconClick,
-                                  clothes: clothes)),
+                  Container(
+                      // 하단 컨테이너
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      height: MediaQuery.of(context).size.height - 300,
+                      decoration:
+                          BoxDecoration(border: Border.all(color: Colors.red)),
+                      child: weatherData.isEmpty
+                          ? const EmptyTextField(content: '지역을 선택해 주세요.')
+                          : null)
+
+                  // weatherData.isEmpty
+                  //     ? // 날씨 정보 없는 경우
+                  //     const Center(
+                  //         child: Column(
+                  //           children: [
+                  //             Text(
+                  //               '선택하세요.',
+                  //               style: TextStyle(
+                  //                   fontSize: 20, color: Colors.white),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       )
+                  //     : // 날씨 정보 있는 경우
+                  //     SizedBox(
+                  //         width: MediaQuery.of(context).size.width / 1.2,
+                  //         height: MediaQuery.of(context).size.height - 300,
+                  //         child:
+                  //             // 날씨 정보 카드
+                  //             WeatherCard(
+                  //                 weatherData: weatherData,
+                  //                 inputText: inputText,
+                  //                 isBookmark: isBookmark,
+                  //                 bookmarkIconClick: bookmarkIconClick,
+                  //                 clothes: clothes)),
                 ]))));
   }
 }
