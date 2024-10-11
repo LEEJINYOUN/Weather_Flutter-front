@@ -9,6 +9,7 @@ import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
+import 'package:weather_flutter_front/widgets/container/clothes_container.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
@@ -203,12 +204,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Center(
-              child: Container(
+              child: SizedBox(
                 // 상단 컨테이너
                 width: MediaQuery.of(context).size.width / 1.2,
                 height: 150,
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.red)),
                 child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: 80,
@@ -234,33 +233,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.red)),
                 child: weatherData.isEmpty
-                    ? const EmptyTextField(content: '지역을 검색해 주세요.')
-                    : null)
-
-            // weatherData.isEmpty
-            //     ? // 날씨 정보 없는 경우
-            //     const Center(
-            //         child: Column(
-            //           children: [
-            //             Text(
-            //               '검색하세요.',
-            //               style: TextStyle(fontSize: 20, color: Colors.white),
-            //             ),
-            //           ],
-            //         ),
-            //       )
-            //     : // 날씨 정보 있는 경우
-            //     SizedBox(
-            //         width: MediaQuery.of(context).size.width / 1.2,
-            //         height: MediaQuery.of(context).size.height - 300,
-            //         child:
-            //             // 날씨 정보 카드
-            //             WeatherCard(
-            //                 weatherData: weatherData,
-            //                 inputText: inputText,
-            //                 isBookmark: isBookmark,
-            //                 bookmarkIconClick: bookmarkIconClick,
-            //                 clothes: clothes))
+                    ? // 날씨 정보 없는 경우
+                    const EmptyTextField(content: '지역을 검색해 주세요.')
+                    : // 날씨 정보 있는 경우
+                    SizedBox(
+                        child: SingleChildScrollView(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // 날씨 정보
+                            WeatherCard(
+                              weatherData: weatherData,
+                              inputText: inputText,
+                              isBookmark: isBookmark,
+                              bookmarkIconClick: bookmarkIconClick,
+                            ),
+                            // 옷 리스트
+                            ClothesContainer(clothes: clothes)
+                          ],
+                        )),
+                      ))
           ]),
         ),
       ),

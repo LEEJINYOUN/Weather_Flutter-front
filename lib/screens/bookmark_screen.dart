@@ -8,6 +8,7 @@ import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/container/clothes_container.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
 
@@ -194,12 +195,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                  Container(
+                  SizedBox(
                     // 상단 컨테이너
                     width: MediaQuery.of(context).size.width,
                     height: 150,
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.red)),
                     child: Column(
                       children: [
                         // 즐겨찾기 개수
@@ -272,34 +271,30 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                       decoration:
                           BoxDecoration(border: Border.all(color: Colors.red)),
                       child: weatherData.isEmpty
-                          ? const EmptyTextField(content: '지역을 선택해 주세요.')
-                          : null)
-
-                  // weatherData.isEmpty
-                  //     ? // 날씨 정보 없는 경우
-                  //     const Center(
-                  //         child: Column(
-                  //           children: [
-                  //             Text(
-                  //               '선택하세요.',
-                  //               style: TextStyle(
-                  //                   fontSize: 20, color: Colors.white),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       )
-                  //     : // 날씨 정보 있는 경우
-                  //     SizedBox(
-                  //         width: MediaQuery.of(context).size.width / 1.2,
-                  //         height: MediaQuery.of(context).size.height - 300,
-                  //         child:
-                  //             // 날씨 정보 카드
-                  //             WeatherCard(
-                  //                 weatherData: weatherData,
-                  //                 inputText: inputText,
-                  //                 isBookmark: isBookmark,
-                  //                 bookmarkIconClick: bookmarkIconClick,
-                  //                 clothes: clothes)),
+                          ?
+                          // 날씨 정보 없는 경우
+                          const EmptyTextField(content: '지역을 선택해 주세요.')
+                          :
+                          // 날씨 정보 있는 경우
+                          SizedBox(
+                              child: SingleChildScrollView(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                    // 날씨 정보
+                                    WeatherCard(
+                                      weatherData: weatherData,
+                                      inputText: inputText,
+                                      isBookmark: isBookmark,
+                                      bookmarkIconClick: bookmarkIconClick,
+                                    ),
+                                    // 옷 리스트
+                                    ClothesContainer(clothes: clothes)
+                                  ])),
+                            ))
                 ]))));
   }
 }
