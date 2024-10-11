@@ -29,25 +29,25 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 0;
+  int selectedIndex = 0;
 
   // 하단 메뉴 버튼 변경
-  void _onItemTapped(int index) {
+  void itemOnTap(int index) {
     // setState => 실시간으로 변경
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: appScreens[_selectedIndex],
+        body: appScreens[selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
+            currentIndex: selectedIndex,
+            onTap: itemOnTap,
             selectedItemColor: Colors.blueGrey,
-            unselectedItemColor: const Color(0xff526400),
+            unselectedItemColor: const Color.fromARGB(255, 98, 114, 180),
             showUnselectedLabels: false,
             showSelectedLabels: false,
             items: const [

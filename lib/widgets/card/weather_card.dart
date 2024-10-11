@@ -23,13 +23,19 @@ class WeatherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 메인 정보
+        // 상단 컨테이너 (메인 정보)
         Container(
           margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(170, 205, 205, 205),
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            // 즐겨찾기 아이콘
+            Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 isBookmark == true
                     ? IconButton(
@@ -46,10 +52,18 @@ class WeatherCard extends StatelessWidget {
                         color: Colors.red,
                         onPressed: bookmarkIconClick,
                       ),
+              ],
+            ),
+
+            // 지역, 날씨 아이콘
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 MainInfoField(value: inputText, fontSize: 25),
                 Container(
-                    width: 100,
-                    height: 100,
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(
@@ -57,6 +71,8 @@ class WeatherCard extends StatelessWidget {
                     )),
               ],
             ),
+
+            // 현재 기온
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               child: Row(
@@ -69,6 +85,8 @@ class WeatherCard extends StatelessWidget {
                 ],
               ),
             ),
+
+            // 최고, 최저 기온
             SizedBox(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,9 +105,14 @@ class WeatherCard extends StatelessWidget {
           ]),
         ),
 
-        // 서브 정보
+        // 하단 컨테이너 (서브 정보)
         Container(
           margin: const EdgeInsets.only(top: 50),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(170, 205, 205, 205),
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Column(
             children: [
               SubInfoField(

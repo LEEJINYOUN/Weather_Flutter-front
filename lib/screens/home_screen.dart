@@ -89,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
       temp = 0;
       searchController.text = '';
     });
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   // 검색어 번역
@@ -203,9 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            // 상단 컨테이너
             Center(
               child: SizedBox(
-                // 상단 컨테이너
                 width: MediaQuery.of(context).size.width / 1.2,
                 height: 150,
                 child: Container(
@@ -214,8 +215,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 15),
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     alignment: Alignment.center,
-                    // 검색 창
-                    child: TextFieldInput(
+                    child:
+
+                        // 검색 창
+                        TextFieldInput(
                       textEditingController: searchController,
                       hintText: '지역 검색',
                       textInputType: TextInputType.text,
@@ -226,12 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
               ),
             ),
-            Container(
-                // 하단 컨테이너
+
+            // 하단 컨테이너
+            SizedBox(
                 width: MediaQuery.of(context).size.width / 1.2,
                 height: MediaQuery.of(context).size.height - 300,
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.red)),
                 child: weatherData.isEmpty
                     ? // 날씨 정보 없는 경우
                     const EmptyTextField(content: '지역을 검색해 주세요.')
@@ -249,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               isBookmark: isBookmark,
                               bookmarkIconClick: bookmarkIconClick,
                             ),
+
                             // 옷 리스트
                             ClothesContainer(clothes: clothes)
                           ],

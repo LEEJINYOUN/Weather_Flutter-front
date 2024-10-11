@@ -6,6 +6,7 @@ import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utils/constant.dart';
 import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:weather_flutter_front/widgets/card/bookmark_card.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/widgets/container/clothes_container.dart';
@@ -195,8 +196,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                  // 상단 컨테이너
                   SizedBox(
-                    // 상단 컨테이너
                     width: MediaQuery.of(context).size.width,
                     height: 150,
                     child: Column(
@@ -215,67 +216,34 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 )),
                           ],
                         ),
-                        // 즐겨찾기 리스트
+
+                        // 즐겨찾기 리스트 컨테이너
                         Container(
                             width: MediaQuery.of(context).size.width,
                             height: 80,
                             margin: const EdgeInsets.symmetric(vertical: 15),
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: isBookmarkList
-                                ? ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.only(
-                                        top: 5, bottom: 5),
-                                    itemCount: bookmarks.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return InkWell(
-                                          onTap: () => changeKrToEn({
-                                                'location_kr':
-                                                    '${bookmarks[index]['location_kr']}',
-                                                'location_en':
-                                                    '${bookmarks[index]['location_en']}',
-                                                'image_number':
-                                                    '${bookmarks[index]['image_number']}',
-                                              }),
-                                          child: Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 10, right: 10),
-                                              width: 120,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: NetworkImage(
-                                                        '$imagesUrl/images/bg_image${bookmarks[index]['image_number']}.jpg')),
-                                              ),
-                                              child: Center(
-                                                  child: Text(
-                                                '${bookmarks[index]['location_kr']}',
-                                                style: TextStyle(
-                                                    color: textColor(
-                                                        bookmarks[index]
-                                                            ['image_number']),
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ))));
-                                    })
+                                ?
+                                // 즐겨찾기 리스트
+                                BookmarkCard(
+                                    bookmarks: bookmarks,
+                                    changeKrToEn: changeKrToEn,
+                                    textColor: textColor,
+                                    imagesUrl: imagesUrl)
                                 : null)
                       ],
                     ),
                   ),
-                  Container(
-                      // 하단 컨테이너
+
+                  // 하단 컨테이너
+                  SizedBox(
                       width: MediaQuery.of(context).size.width / 1.2,
                       height: MediaQuery.of(context).size.height - 300,
-                      decoration:
-                          BoxDecoration(border: Border.all(color: Colors.red)),
                       child: weatherData.isEmpty
-                          ?
-                          // 날씨 정보 없는 경우
+                          ? // 날씨 정보 없는 경우
                           const EmptyTextField(content: '지역을 선택해 주세요.')
-                          :
-                          // 날씨 정보 있는 경우
+                          : // 날씨 정보 있는 경우
                           SizedBox(
                               child: SingleChildScrollView(
                                   child: Column(
@@ -291,6 +259,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                       isBookmark: isBookmark,
                                       bookmarkIconClick: bookmarkIconClick,
                                     ),
+
                                     // 옷 리스트
                                     ClothesContainer(clothes: clothes)
                                   ])),
