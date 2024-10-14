@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class EnvData {
+class EnvConstant {
   String backendApi() {
     return dotenv.env['BACKEND_API_URL']!;
   }
@@ -9,7 +9,7 @@ class EnvData {
     return dotenv.env['WEATHER_API_KEY']!;
   }
 
-  String iconsUrl() {
+  String imageFrontUrl() {
     return dotenv.env['SIRV_URL']!;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/utils/celsiusConversion.dart';
+import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/widgets/table/weather/main_info_field.dart';
 import 'package:weather_flutter_front/widgets/table/weather/sub_info_field.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';

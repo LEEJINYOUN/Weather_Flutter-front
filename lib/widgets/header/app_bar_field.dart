@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
 
 class AppBarField extends StatelessWidget implements PreferredSizeWidget {
+  // 변수
   final String title;
   final bool isActions;
 
@@ -21,17 +21,18 @@ class AppBarField extends StatelessWidget implements PreferredSizeWidget {
         dynamic result = await AuthMethod().logout();
 
         if (result['statusCode'] == 201) {
-          dataPrint(text: result['message']);
+          debugPrint(result['message'] as dynamic);
+
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const LoginScreen(),
             ),
           );
         } else {
-          dataPrint(text: '오류 발생!');
+          debugPrint('오류 발생!' as dynamic);
         }
       } catch (e) {
-        dataPrint(text: e);
+        debugPrint(e as dynamic);
       }
     }
 

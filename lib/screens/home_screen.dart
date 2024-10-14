@@ -6,10 +6,9 @@ import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
-import 'package:weather_flutter_front/utils/constant.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:weather_flutter_front/utilities/env_constant.dart';
+import 'package:weather_flutter_front/widgets/card/clothes_card.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:weather_flutter_front/widgets/container/clothes_container.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final translator = GoogleTranslator();
 
   // cdn 주소
-  String imagesUrl = EnvData().iconsUrl();
+  String imagesUrl = EnvConstant().imageFrontUrl();
 
   // 번역관련 변수
   String inputText = '';
@@ -72,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         userInfo = getUserInfo;
       });
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
       getClothesTemp();
       getBookmark();
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -137,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -166,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -182,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         });
       } catch (e) {
-        dataPrint(text: e);
+        debugPrint(e as dynamic);
         rethrow;
       }
     }
@@ -252,8 +251,37 @@ class _HomeScreenState extends State<HomeScreen> {
                               bookmarkIconClick: bookmarkIconClick,
                             ),
 
-                            // 옷 리스트
-                            ClothesContainer(clothes: clothes)
+                            // 옷 컨테이너
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 250,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                margin:
+                                    const EdgeInsets.only(top: 30, bottom: 20),
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    // 옷 타이틀
+                                    Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.only(
+                                          top: 5, bottom: 10),
+                                      child: const Text(
+                                        '- 오늘의 옷 추천 -',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+
+                                    // 옷 리스트
+                                    ClothesCard(clothes: clothes)
+                                  ],
+                                ))
                           ],
                         )),
                       ))

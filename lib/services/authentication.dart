@@ -1,13 +1,13 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:weather_flutter_front/utils/constant.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/utilities/env_constant.dart';
 
 class AuthMethod {
   final storage = const FlutterSecureStorage();
 
-  var backendUrl = EnvData().backendApi();
+  var backendUrl = EnvConstant().backendApi();
 
   // 회원가입
   Future<dynamic> register({
@@ -34,7 +34,7 @@ class AuthMethod {
 
       return registerData;
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -79,7 +79,7 @@ class AuthMethod {
         return userData;
       }
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -99,7 +99,7 @@ class AuthMethod {
 
       return jsonResponse;
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 
@@ -120,7 +120,7 @@ class AuthMethod {
       await storage.deleteAll();
       return jsonResponse;
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
     }
   }
 }
