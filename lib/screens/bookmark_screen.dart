@@ -4,6 +4,8 @@ import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
+import 'package:weather_flutter_front/utilities/bg_change.dart';
+import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
 import 'package:weather_flutter_front/widgets/card/bookmark_card.dart';
 import 'package:weather_flutter_front/widgets/card/clothes_card.dart';
@@ -42,7 +44,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   bool isBookmarkList = false;
   bool isBookmark = true;
   final List<ClothesModel> clothes = [];
-  dynamic temp = 0;
+  double currentTemp = 0;
+  String errorMessage = '';
+  bool isClick = false;
 
   // state 진입시 함수 실행
   @override
@@ -93,8 +97,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
         weatherData = result;
-        temp =
-            double.parse((result["main"]["temp"] - 273.15).toStringAsFixed(1));
+        currentTemp =
+            double.parse(celsiusConversion(temp: weatherData["main"]["temp"]));
+        isClick = true;
       });
       getClothesTemp();
     } catch (e) {
@@ -142,6 +147,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       if (result == true) {
         setState(() {
           isBookmark = false;
+          isClick = false;
           weatherData = {};
         });
         getBookmarks();
@@ -164,7 +170,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   void getClothesTemp() async {
     if (weatherData.isNotEmpty) {
       try {
-        dynamic result = await ClothesMethod().getClothesByTemp(temp);
+        dynamic result = await ClothesMethod().getClothesByTemp(currentTemp);
         setState(() {
           clothes.clear();
           result.forEach((element) {
@@ -184,11 +190,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: NetworkImage('$imagesUrl/images/bg_image1.jpg'), // 배경 이미지
+            image: NetworkImage(
+                '$imagesUrl/images/${!isClick ? 'bg-image.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
           ),
         ),
         child: Scaffold(
-            backgroundColor: const Color.fromARGB(49, 232, 232, 232),
+            backgroundColor: const Color.fromARGB(155, 147, 147, 147),
             resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
             appBar: const AppBarField(title: '즐겨찾기', isActions: true),
             body: SingleChildScrollView(

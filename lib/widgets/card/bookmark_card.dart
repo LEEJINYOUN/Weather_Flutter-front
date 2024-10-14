@@ -34,8 +34,7 @@ class BookmarkCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(
-                            '$imagesUrl/images/bg_image${bookmarks[index]['image_number']}.jpg')),
+                        image: NetworkImage('$imagesUrl/images/bg-image.jpg')),
                   ),
                   child: Center(
                       child: Text(

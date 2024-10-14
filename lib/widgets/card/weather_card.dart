@@ -26,9 +26,9 @@ class WeatherCard extends StatelessWidget {
         // 상단 컨테이너 (메인 정보)
         Container(
           margin: const EdgeInsets.only(top: 20),
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(170, 205, 205, 205),
+            color: const Color.fromARGB(86, 205, 205, 205),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(children: [
@@ -80,7 +80,7 @@ class WeatherCard extends StatelessWidget {
                 children: [
                   MainInfoField(
                       value:
-                          celsiusConversion(temp: weatherData["main"]["temp"]),
+                          '${celsiusConversion(temp: weatherData["main"]["temp"])} \u2103',
                       fontSize: 25),
                 ],
               ),
@@ -93,11 +93,11 @@ class WeatherCard extends StatelessWidget {
                 children: [
                   MainInfoField(
                       value:
-                          '최고 ${celsiusConversion(temp: weatherData["main"]["temp_max"])}',
+                          '최고 ${celsiusConversion(temp: weatherData["main"]["temp_max"])} \u2103',
                       fontSize: 22),
                   MainInfoField(
                       value:
-                          '최저 ${celsiusConversion(temp: weatherData["main"]["temp_min"])}',
+                          '최저 ${celsiusConversion(temp: weatherData["main"]["temp_min"])} \u2103',
                       fontSize: 22),
                 ],
               ),
@@ -108,9 +108,9 @@ class WeatherCard extends StatelessWidget {
         // 하단 컨테이너 (서브 정보)
         Container(
           margin: const EdgeInsets.only(top: 50),
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(170, 205, 205, 205),
+            color: const Color.fromARGB(86, 205, 205, 205),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
