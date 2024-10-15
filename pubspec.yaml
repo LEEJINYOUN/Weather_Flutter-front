@@ -41,6 +41,7 @@ dependencies:
   http: ^1.2.2
   flutter_secure_storage: ^9.2.2
   translator: ^1.0.0
+  snippet_coder_utils: ^1.0.15
 
 dev_dependencies:
   flutter_test:
