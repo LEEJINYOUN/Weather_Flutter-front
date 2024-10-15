@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_flutter_front/models/clothes_model.dart';
+import 'package:weather_flutter_front/models/location_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
+import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
 import 'package:weather_flutter_front/widgets/card/clothes_card.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
@@ -45,10 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic> userInfo = {};
   Map<String, dynamic> weatherData = {};
   final List<ClothesModel> clothes = [];
+  final List<LocationModel> countryLocations = [];
   double currentTemp = 0;
   bool isBookmark = false;
   bool isClick = false;
   String errorMessage = '';
+  List<String> countryItem = ['나라 선택', '한국', '일본', '중국'];
+  String currentCountryValue = '나라 선택';
+  late int countryNumber;
 
   // state 진입시 함수 실행
   @override
@@ -74,6 +79,46 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       debugPrint(e as dynamic);
+    }
+  }
+
+  // 나라 번호 선택
+  void countryNumberChange(text) {
+    if (text == '나라 선택') {
+      setState(() {
+        countryNumber = 0;
+      });
+    } else if (text == '한국') {
+      setState(() {
+        countryNumber = 1;
+      });
+    } else if (text == '일본') {
+      setState(() {
+        countryNumber = 2;
+      });
+    } else if (text == '중국') {
+      setState(() {
+        countryNumber = 3;
+      });
+    }
+    countrySelect(countryNumber);
+  }
+
+  // 나라 별 지역 리스트 조회
+  void countrySelect(number) async {
+    if (number != 0) {
+      try {
+        // 나라 별 지역 리스트 API 연동
+        dynamic result = await LocationMethod().getLocationByCountryId(number);
+        setState(() {
+          countryLocations.clear();
+          result.forEach((element) {
+            countryLocations.add(LocationModel.fromJson(element));
+          });
+        });
+      } catch (e) {
+        debugPrint(e as dynamic);
+      }
     }
   }
 
@@ -231,15 +276,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.center,
                     child:
 
-                        // 검색 창
-                        TextFieldInput(
-                      textEditingController: searchController,
-                      hintText: '지역 검색',
-                      textInputType: TextInputType.text,
-                      prefixIcon: Icons.search,
-                      prefixOnTap: searchActive,
-                      suffixIcon: Icons.close,
-                      suffixOnTap: resetActive,
+                        // 검색 컨테이너
+                        Container(
+                      width: MediaQuery.of(context).size.width / 4,
+                      height: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: DropdownButton<String>(
+                          value: currentCountryValue,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          elevation: 1,
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black),
+                          underline: const SizedBox.shrink(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              currentCountryValue = value!;
+                            });
+                          },
+                          items: countryItem
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              onTap: () {
+                                countryNumberChange(value);
+                              },
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList()),
                     )),
               ),
             ),
