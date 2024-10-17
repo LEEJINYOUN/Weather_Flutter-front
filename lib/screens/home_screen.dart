@@ -10,12 +10,12 @@ import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
-import 'package:weather_flutter_front/widgets/card/clothes_card.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
+import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
+import 'package:weather_flutter_front/widgets/container/select_box_container_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,17 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // 입력 컨트롤러
   final TextEditingController searchController = TextEditingController();
 
-  // 구글 번역 선언
-  final translator = GoogleTranslator();
-
   // cdn 주소
   String imagesUrl = EnvConstant().imageFrontUrl();
-
-  // 번역관련 변수
-  String inputText = '';
-  String outputText = '';
-  String inputLanguage = 'ko';
-  String outputLanguage = 'en';
 
   // 나라, 지역 선택관련 변수
   late List<dynamic> states = [];
@@ -50,6 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool countriesSelect = false;
   final List<dynamic> countries = [];
   final List<dynamic> locations = [];
+
+  // 구글 번역 선언
+  final translator = GoogleTranslator();
+
+  // 번역관련 변수
+  String inputText = '';
+  String outputText = '';
+  String inputLanguage = 'ko';
+  String outputLanguage = 'en';
 
   // 기타 변수
   Map<String, dynamic> userInfo = {};
@@ -123,7 +123,30 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 검색어 번역
+  // 선택 대분류 값 변경
+  void mainSelectOnChangedVal(onChangedVal) {
+    setState(() {
+      countriesSelect = true;
+    });
+    countryId = onChangedVal;
+
+    states = locations
+        .where((stateItem) => stateItem['countryId'].toString() == onChangedVal)
+        .toList();
+    stateName = '지역 선택';
+  }
+
+  // 선택 소분류 값 변경
+  void subSelectOnChangedVal(onChangedVal) {
+    if (countriesSelect == true) {
+      setState(() {
+        stateName = onChangedVal;
+        translateText();
+      });
+    }
+  }
+
+  // 검색할 지역 번역
   Future<void> translateText() async {
     final translated = await translator.translate(stateName,
         from: inputLanguage, to: outputLanguage);
@@ -245,78 +268,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // 상단 컨테이너
             SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              // height: MediaQuery.of(context).size.height,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 선택 대분류
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: FormHelper.dropDownWidget(
-                        context,
-                        "나라 선택",
-                        countryId,
-                        countries,
-                        (onChangedVal) {
-                          setState(() {
-                            countriesSelect = true;
-                          });
-                          countryId = onChangedVal;
-                          print('선택한 나라 : $countryId');
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child:
+                    // 선택 박스 컨테이너
+                    SelectBoxContainerField(
+                  states: states,
+                  countryId: countryId,
+                  stateName: stateName,
+                  countries: countries,
+                  mainSelectOnChangedVal: mainSelectOnChangedVal,
+                  subSelectOnChangedVal: subSelectOnChangedVal,
+                )),
 
-                          states = locations
-                              .where((stateItem) =>
-                                  stateItem['countryId'].toString() ==
-                                  onChangedVal)
-                              .toList();
-                          stateName = '지역 선택';
-                        },
-                        (onValidateVal) {
-                          if (onValidateVal == null) {
-                            return '나라를 선택하세요.';
-                          }
-                          return null;
-                        },
-                        borderColor: Colors.lightBlueAccent,
-                        borderFocusColor: Colors.redAccent,
-                        borderRadius: 10,
-                      ),
-                    ),
-
-                    // 선택 소분류
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        child: FormHelper.dropDownWidget(
-                          context,
-                          '지역 선택',
-                          stateName,
-                          states,
-                          (onChangedVal) {
-                            if (countriesSelect == true) {
-                              setState(() {
-                                stateName = onChangedVal;
-                                print('선택한 지역 : $onChangedVal');
-                                translateText();
-                              });
-                            }
-                          },
-                          (onValidateVal) {
-                            if (onValidateVal == null) {
-                              return '나라를 선택하세요.';
-                            }
-                            return null;
-                          },
-                          borderColor: Colors.black,
-                          borderFocusColor: Colors.redAccent,
-                          borderRadius: 10,
-                          optionValue: 'locationName',
-                          optionLabel: 'locationName',
-                        ))
-                  ]),
-            ), //   // 하단 컨테이너
+            // 하단 컨테이너
             SizedBox(
                 width: MediaQuery.of(context).size.width / 1.2,
                 height: MediaQuery.of(context).size.height - 300,
@@ -345,154 +310,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
 
                                     // 옷 컨테이너
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 250,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                            top: 30, bottom: 20),
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          children: [
-                                            // 옷 타이틀
-                                            Container(
-                                              width: double.infinity,
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.only(
-                                                  top: 5, bottom: 10),
-                                              child: const Text(
-                                                '- 오늘의 옷 추천 -',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            ),
-
-                                            // 옷 리스트
-                                            ClothesCard(clothes: clothes)
-                                          ],
-                                        ))
+                                    ClothesContainerField(clothes: clothes)
                                   ],
                                 )),
                               ))
           ],
-        )
-
-            //     Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            //   // 상단 컨테이너
-            //   SizedBox(
-            // width: MediaQuery.of(context).size.width,
-            // height: 150,
-            //     child: Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            //       children: [
-            //         SizedBox(
-            //             width: MediaQuery.of(context).size.width / 2.5,
-            // child: FormHelper.dropDownWidget(
-            //   context,
-            //   "나라 선택",
-            //   countryId,
-            //   countries,
-            //   (onChangedVal) {
-            //     setState(() {
-            //       countriesSelect = true;
-            //     });
-            //     countryId = onChangedVal;
-            //     print('선택한 나라 : $countryId');
-
-            //     states = locations
-            //         .where((stateItem) =>
-            //             stateItem['countryId'].toString() ==
-            //             onChangedVal)
-            //         .toList();
-            //     stateName = null;
-            //   },
-            //   (onValidateVal) {
-            //     if (onValidateVal == null) {
-            //       return '나라를 선택하세요.';
-            //     }
-            //     return null;
-            //   },
-            //   borderColor: Colors.lightBlueAccent,
-            //   borderFocusColor: Colors.redAccent,
-            //   borderRadius: 10,
-            // )),
-            // SizedBox(
-            //     width: MediaQuery.of(context).size.width / 2.5,
-            //     child: FormHelper.dropDownWidget(
-            //       context,
-            //       '지역 선택',
-            //       stateName,
-            //       states,
-            //       (onChangedVal) {
-            //         if (countriesSelect == true) {
-            //           setState(() {
-            //             stateName = onChangedVal;
-            //             print('선택한 지역 : $onChangedVal');
-            //           });
-            //         }
-            //       },
-            //       (onValidate) {
-            //         return null;
-            //       },
-            //       borderColor: Colors.black,
-            //       borderFocusColor: Colors.redAccent,
-            //       borderRadius: 10,
-            //       optionValue: 'locationName',
-            //     ))
-            //       ],
-            //     ),
-            //   ),
-            //   // Center(
-            //   //   child: Container(
-            //   //     width: MediaQuery.of(context).size.width / 1.2,
-            //   //     height: 150,
-            //   //     color: Colors.white,
-            //   //     child:
-
-            //   //     // 검색 컨테이너
-            //   //     //     Container(
-            //   //     //   width: MediaQuery.of(context).size.width / 4,
-            //   //     //   height: 30,
-            //   //     //   alignment: Alignment.center,
-            //   //     //   decoration: BoxDecoration(
-            //   //     //       color: Colors.white,
-            //   //     //       borderRadius: BorderRadius.circular(5)),
-            //   //     //   child: DropdownButton<String>(
-            //   //     //       value: currentCountryValue,
-            //   //     //       icon: const Icon(Icons.arrow_drop_down),
-            //   //     //       elevation: 1,
-            //   //     //       style: const TextStyle(
-            //   //     //           fontSize: 15, color: Colors.black),
-            //   //     //       underline: const SizedBox.shrink(),
-            //   //     //       onChanged: (String? value) {
-            //   //     //         setState(() {
-            //   //     //           currentCountryValue = value!;
-            //   //     //         });
-            //   //     //       },
-            //   //     //       items: countryItem
-            //   //     //           .map<DropdownMenuItem<String>>((String value) {
-            //   //     //         return DropdownMenuItem<String>(
-            //   //     //           onTap: () {
-            //   //     //             countryNumberChange(value);
-            //   //     //           },
-            //   //     //           value: value,
-            //   //     //           child: Text(value),
-            //   //     //         );
-            //   //     //       }).toList()),
-            //   //     // )
-            //   //   ),
-            //   // ),
-
-            // ]),
-            ),
+        )),
       ),
     );
   }

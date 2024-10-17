@@ -7,10 +7,10 @@ import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
-import 'package:weather_flutter_front/widgets/card/bookmark_card.dart';
-import 'package:weather_flutter_front/widgets/card/clothes_card.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/container/bookmark_container_field.dart';
+import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
 
@@ -53,6 +53,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   void initState() {
     super.initState();
     getUserInfo();
+    print(changeKrToEn.runtimeType);
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -224,20 +225,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                         ),
 
                         // 즐겨찾기 리스트 컨테이너
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 80,
-                            margin: const EdgeInsets.symmetric(vertical: 15),
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: isBookmarkList
-                                ?
-                                // 즐겨찾기 리스트
-                                BookmarkCard(
-                                    bookmarks: bookmarks,
-                                    changeKrToEn: changeKrToEn,
-                                    textColor: textColor,
-                                    imagesUrl: imagesUrl)
-                                : null)
+                        BookmarkContainerField(
+                          isBookmarkList: isBookmarkList,
+                          bookmarks: bookmarks,
+                          changeKrToEn: changeKrToEn,
+                          textColor: textColor,
+                        )
                       ],
                     ),
                   ),
@@ -267,39 +260,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                     ),
 
                                     // 옷 컨테이너
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 250,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                            top: 30, bottom: 20),
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          children: [
-                                            // 옷 타이틀
-                                            Container(
-                                              width: double.infinity,
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.only(
-                                                  top: 5, bottom: 10),
-                                              child: const Text(
-                                                '- 오늘의 옷 추천 -',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            ),
-
-                                            // 옷 리스트
-                                            ClothesCard(clothes: clothes)
-                                          ],
-                                        ))
+                                    ClothesContainerField(clothes: clothes)
                                   ])),
                             ))
                 ]))));

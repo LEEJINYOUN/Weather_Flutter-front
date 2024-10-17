@@ -72,10 +72,11 @@ class BookmarkMethod {
       var url = '$backendUrl/bookmark/update/$userId';
 
       var reqBody = {
-        locationKr,
-        locationEn,
-        imageNumber,
+        'locationKr': locationKr,
+        'locationEn': locationEn,
+        'imageNumber': imageNumber,
       };
+
       var response = await http.post(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',

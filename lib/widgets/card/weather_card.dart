@@ -9,7 +9,7 @@ class WeatherCard extends StatelessWidget {
   final dynamic weatherData;
   final String? inputText;
   final bool isBookmark;
-  final VoidCallback bookmarkIconClick;
+  final dynamic bookmarkIconClick;
 
   const WeatherCard({
     super.key,
