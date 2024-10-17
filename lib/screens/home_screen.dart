@@ -57,242 +57,242 @@ class _HomeScreenState extends State<HomeScreen> {
   String currentCountryValue = '나라 선택';
   late int countryNumber;
 
-  // state 진입시 함수 실행
-  @override
-  void initState() {
-    super.initState();
-    getUserInfo();
+  // // state 진입시 함수 실행
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getUserInfo();
 
-    // 추가
-    getAllCountry();
-    getAllLocationByCountryId();
-  }
-
-  // 컨트롤러 객체 제거 시 메모리 해제
-  @override
-  void dispose() {
-    super.dispose();
-    searchController.dispose();
-  }
-
-  // 유저 정보 가져오기
-  void getUserInfo() async {
-    try {
-      var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().getUser(token: token);
-      setState(() {
-        userInfo = getUserInfo;
-      });
-    } catch (e) {
-      debugPrint(e as dynamic);
-    }
-  }
-
-  // 나라 번호 선택
-  // void countryNumberChange(text) {
-  //   if (text == '나라 선택') {
-  //     setState(() {
-  //       countryNumber = 0;
-  //     });
-  //   } else if (text == '한국') {
-  //     setState(() {
-  //       countryNumber = 1;
-  //     });
-  //   } else if (text == '일본') {
-  //     setState(() {
-  //       countryNumber = 2;
-  //     });
-  //   } else if (text == '중국') {
-  //     setState(() {
-  //       countryNumber = 3;
-  //     });
-  //   }
-  //   countrySelect(countryNumber);
+  //   // 추가
+  //   getAllCountry();
+  //   getAllLocationByCountryId();
   // }
 
-  // 나라 별 지역 리스트 조회
-  // void countrySelect(number) async {
-  //   if (number != 0) {
-  //     try {
-  //       // 나라 별 지역 리스트 API 연동
-  //       dynamic result = await LocationMethod().getLocationByCountryId(number);
+  // // 컨트롤러 객체 제거 시 메모리 해제
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   searchController.dispose();
+  // }
+
+  // // 유저 정보 가져오기
+  // void getUserInfo() async {
+  //   try {
+  //     var token = await storage.read(key: "token");
+  //     var getUserInfo = await AuthMethod().getUser(token: token);
+  //     setState(() {
+  //       userInfo = getUserInfo;
+  //     });
+  //   } catch (e) {
+  //     debugPrint(e as dynamic);
+  //   }
+  // }
+
+  // // 나라 번호 선택
+  // // void countryNumberChange(text) {
+  // //   if (text == '나라 선택') {
+  // //     setState(() {
+  // //       countryNumber = 0;
+  // //     });
+  // //   } else if (text == '한국') {
+  // //     setState(() {
+  // //       countryNumber = 1;
+  // //     });
+  // //   } else if (text == '일본') {
+  // //     setState(() {
+  // //       countryNumber = 2;
+  // //     });
+  // //   } else if (text == '중국') {
+  // //     setState(() {
+  // //       countryNumber = 3;
+  // //     });
+  // //   }
+  // //   countrySelect(countryNumber);
+  // // }
+
+  // // 나라 별 지역 리스트 조회
+  // // void countrySelect(number) async {
+  // //   if (number != 0) {
+  // //     try {
+  // //       // 나라 별 지역 리스트 API 연동
+  // //       dynamic result = await LocationMethod().getLocationByCountryId(number);
+  // //       setState(() {
+  // //         countryLocations.clear();
+  // //         result.forEach((element) {
+  // //           countryLocations.add(LocationModel.fromJson(element));
+  // //         });
+  // //       });
+  // //     } catch (e) {
+  // //       debugPrint(e as dynamic);
+  // //     }
+  // //   }
+  // // }
+
+  // // 검색하기
+  // void searchActive() {
+  //   setState(() {
+  //     errorMessage = '';
+  //   });
+  //   // translateText();
+  //   FocusManager.instance.primaryFocus?.unfocus();
+  // }
+
+  // // 초기화
+  // void resetActive() {
+  //   setState(() {
+  //     resetList();
+  //     searchController.text = '';
+  //   });
+  //   FocusManager.instance.primaryFocus?.unfocus();
+  // }
+
+  // // 초기화 목록
+  // void resetList() {
+  //   setState(() {
+  //     weatherData = {};
+  //     currentTemp = 0;
+  //     errorMessage = '';
+  //     isClick = false;
+  //   });
+  // }
+
+  // // 검색어 번역
+  // // Future<void> translateText() async {
+  // //   final translated = await translator.translate(searchController.text,
+  // //       from: inputLanguage, to: outputLanguage);
+
+  // //   setState(() {
+  // //     inputText = searchController.text;
+  // //     outputText = translated.text;
+  // //   });
+  // //   getWeather(outputText);
+  // // }
+
+  // // 날씨 정보 가져오기
+  // void getWeather(String cityName) async {
+  //   try {
+  //     resetList();
+  //     dynamic result = await WeatherMethod().getWeatherInfo(cityName);
+  //     setState(() {
+  //       weatherData = result;
+  //       currentTemp =
+  //           double.parse(celsiusConversion(temp: weatherData["main"]["temp"]));
+  //       searchController.text = '';
+  //       isClick = true;
+  //     });
+  //     getClothesTemp();
+  //     getBookmark();
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = '등록된 지역이 없습니다.';
+  //     });
+  //     debugPrint(e as dynamic);
+  //   }
+  // }
+
+  // // 즐겨찾기 지역 조회
+  // void getBookmark() async {
+  //   try {
+  //     dynamic result = await BookmarkMethod()
+  //         .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
+
+  //     if (result != 0) {
   //       setState(() {
-  //         countryLocations.clear();
+  //         isBookmark = true;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isBookmark = false;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint(e as dynamic);
+  //   }
+  // }
+
+  // // 즐겨찾기 기능
+  // void bookmarkIconClick() async {
+  //   try {
+  //     // 즐겨찾기 추가 및 삭제 API 연동
+  //     dynamic result = await BookmarkMethod().editBookmark(
+  //         userId: userInfo['id'],
+  //         locationKr: inputText,
+  //         locationEn: outputText,
+  //         imageNumber: 1);
+
+  //     if (result != true) {
+  //       setState(() {
+  //         isBookmark = true;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isBookmark = false;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint(e as dynamic);
+  //   }
+  // }
+
+  // // 기온 별 옷 리스트 가져오기
+  // void getClothesTemp() async {
+  //   if (weatherData.isNotEmpty) {
+  //     try {
+  //       dynamic result = await ClothesMethod().getClothesByTemp(currentTemp);
+  //       setState(() {
+  //         clothes.clear();
   //         result.forEach((element) {
-  //           countryLocations.add(LocationModel.fromJson(element));
+  //           clothes.add(ClothesModel.fromJson(element));
   //         });
   //       });
   //     } catch (e) {
   //       debugPrint(e as dynamic);
+  //       rethrow;
   //     }
   //   }
   // }
 
-  // 검색하기
-  void searchActive() {
-    setState(() {
-      errorMessage = '';
-    });
-    // translateText();
-    FocusManager.instance.primaryFocus?.unfocus();
-  }
+  // // 추가
+  // late List<dynamic> states = [];
+  // String? countryId;
+  // String? stateName;
+  // bool countriesSelect = false;
+  // final List<dynamic> countries = [];
+  // final List<dynamic> locations = [];
 
-  // 초기화
-  void resetActive() {
-    setState(() {
-      resetList();
-      searchController.text = '';
-    });
-    FocusManager.instance.primaryFocus?.unfocus();
-  }
+  // // 모든 나라 조회
+  // void getAllCountry() async {
+  //   try {
+  //     dynamic result = await CountryMethod().getAllCountry();
 
-  // 초기화 목록
-  void resetList() {
-    setState(() {
-      weatherData = {};
-      currentTemp = 0;
-      errorMessage = '';
-      isClick = false;
-    });
-  }
-
-  // 검색어 번역
-  // Future<void> translateText() async {
-  //   final translated = await translator.translate(searchController.text,
-  //       from: inputLanguage, to: outputLanguage);
-
-  //   setState(() {
-  //     inputText = searchController.text;
-  //     outputText = translated.text;
-  //   });
-  //   getWeather(outputText);
+  //     setState(() {
+  //       countries.clear();
+  //       result.forEach((element) {
+  //         countries.add(element);
+  //       });
+  //     });
+  //   } catch (e) {
+  //     debugPrint(e as dynamic);
+  //     rethrow;
+  //   }
   // }
 
-  // 날씨 정보 가져오기
-  void getWeather(String cityName) async {
-    try {
-      resetList();
-      dynamic result = await WeatherMethod().getWeatherInfo(cityName);
-      setState(() {
-        weatherData = result;
-        currentTemp =
-            double.parse(celsiusConversion(temp: weatherData["main"]["temp"]));
-        searchController.text = '';
-        isClick = true;
-      });
-      getClothesTemp();
-      getBookmark();
-    } catch (e) {
-      setState(() {
-        errorMessage = '등록된 지역이 없습니다.';
-      });
-      debugPrint(e as dynamic);
-    }
-  }
+  // // 나라별 모든 지역 조회
+  // void getAllLocationByCountryId() async {
+  //   try {
+  //     dynamic result = await LocationMethod().getAllLocationByCountryId(0);
 
-  // 즐겨찾기 지역 조회
-  void getBookmark() async {
-    try {
-      dynamic result = await BookmarkMethod()
-          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
-
-      if (result != 0) {
-        setState(() {
-          isBookmark = true;
-        });
-      } else {
-        setState(() {
-          isBookmark = false;
-        });
-      }
-    } catch (e) {
-      debugPrint(e as dynamic);
-    }
-  }
-
-  // 즐겨찾기 기능
-  void bookmarkIconClick() async {
-    try {
-      // 즐겨찾기 추가 및 삭제 API 연동
-      dynamic result = await BookmarkMethod().editBookmark(
-          userId: userInfo['id'],
-          locationKr: inputText,
-          locationEn: outputText,
-          imageNumber: 1);
-
-      if (result != true) {
-        setState(() {
-          isBookmark = true;
-        });
-      } else {
-        setState(() {
-          isBookmark = false;
-        });
-      }
-    } catch (e) {
-      debugPrint(e as dynamic);
-    }
-  }
-
-  // 기온 별 옷 리스트 가져오기
-  void getClothesTemp() async {
-    if (weatherData.isNotEmpty) {
-      try {
-        dynamic result = await ClothesMethod().getClothesByTemp(currentTemp);
-        setState(() {
-          clothes.clear();
-          result.forEach((element) {
-            clothes.add(ClothesModel.fromJson(element));
-          });
-        });
-      } catch (e) {
-        debugPrint(e as dynamic);
-        rethrow;
-      }
-    }
-  }
-
-  // 추가
-  late List<dynamic> states = [];
-  String? countryId;
-  String? stateName;
-  bool countriesSelect = false;
-  final List<dynamic> countries = [];
-  final List<dynamic> locations = [];
-
-  // 모든 나라 조회
-  void getAllCountry() async {
-    try {
-      dynamic result = await CountryMethod().getAllCountry();
-
-      setState(() {
-        countries.clear();
-        result.forEach((element) {
-          countries.add(element);
-        });
-      });
-    } catch (e) {
-      debugPrint(e as dynamic);
-      rethrow;
-    }
-  }
-
-  // 나라별 모든 지역 조회
-  void getAllLocationByCountryId() async {
-    try {
-      dynamic result = await LocationMethod().getAllLocationByCountryId(0);
-
-      setState(() {
-        locations.clear();
-        result.forEach((element) {
-          locations.add(element);
-        });
-      });
-    } catch (e) {
-      debugPrint(e as dynamic);
-      rethrow;
-    }
-  }
+  //     setState(() {
+  //       locations.clear();
+  //       result.forEach((element) {
+  //         locations.add(element);
+  //       });
+  //     });
+  //   } catch (e) {
+  //     debugPrint(e as dynamic);
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -308,184 +308,182 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color.fromARGB(155, 147, 147, 147),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
         appBar: const AppBarField(title: '홈', isActions: true),
-        body: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            // 상단 컨테이너
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: FormHelper.dropDownWidget(
-                        context,
-                        "나라 선택",
-                        countryId,
-                        countries,
-                        (onChangedVal) {
-                          setState(() {
-                            countriesSelect = true;
-                          });
-                          countryId = onChangedVal;
-                          print('선택한 나라 : $countryId');
+        body: SingleChildScrollView(child: Text('test')
 
-                          states = locations
-                              .where((stateItem) =>
-                                  stateItem['countryId'].toString() ==
-                                  onChangedVal)
-                              .toList();
-                          stateName = null;
-                        },
-                        (onValidateVal) {
-                          if (onValidateVal == null) {
-                            return '나라를 선택하세요.';
-                          }
-                          return null;
-                        },
-                        borderColor: Colors.lightBlueAccent,
-                        borderFocusColor: Colors.redAccent,
-                        borderRadius: 10,
-                      )),
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: FormHelper.dropDownWidget(
-                        context,
-                        '지역 선택',
-                        stateName,
-                        states,
-                        (onChangedVal) {
-                          if (countriesSelect == true) {
-                            setState(() {
-                              stateName = onChangedVal;
-                              print('선택한 지역 : $onChangedVal');
-                            });
-                          }
-                        },
-                        (onValidate) {
-                          return null;
-                        },
-                        borderColor: Colors.black,
-                        borderFocusColor: Colors.redAccent,
-                        borderRadius: 10,
-                        optionValue: 'locationName',
-                      ))
-                ],
-              ),
-            ),
-            // Center(
-            //   child: Container(
-            //     width: MediaQuery.of(context).size.width / 1.2,
+            //     Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            //   // 상단 컨테이너
+            //   SizedBox(
+            //     width: MediaQuery.of(context).size.width,
             //     height: 150,
-            //     color: Colors.white,
-            //     child:
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         SizedBox(
+            //             width: MediaQuery.of(context).size.width / 2.5,
+            //             child: FormHelper.dropDownWidget(
+            //               context,
+            //               "나라 선택",
+            //               countryId,
+            //               countries,
+            //               (onChangedVal) {
+            //                 setState(() {
+            //                   countriesSelect = true;
+            //                 });
+            //                 countryId = onChangedVal;
+            //                 print('선택한 나라 : $countryId');
 
-            //     // 검색 컨테이너
-            //     //     Container(
-            //     //   width: MediaQuery.of(context).size.width / 4,
-            //     //   height: 30,
-            //     //   alignment: Alignment.center,
-            //     //   decoration: BoxDecoration(
-            //     //       color: Colors.white,
-            //     //       borderRadius: BorderRadius.circular(5)),
-            //     //   child: DropdownButton<String>(
-            //     //       value: currentCountryValue,
-            //     //       icon: const Icon(Icons.arrow_drop_down),
-            //     //       elevation: 1,
-            //     //       style: const TextStyle(
-            //     //           fontSize: 15, color: Colors.black),
-            //     //       underline: const SizedBox.shrink(),
-            //     //       onChanged: (String? value) {
-            //     //         setState(() {
-            //     //           currentCountryValue = value!;
-            //     //         });
-            //     //       },
-            //     //       items: countryItem
-            //     //           .map<DropdownMenuItem<String>>((String value) {
-            //     //         return DropdownMenuItem<String>(
-            //     //           onTap: () {
-            //     //             countryNumberChange(value);
-            //     //           },
-            //     //           value: value,
-            //     //           child: Text(value),
-            //     //         );
-            //     //       }).toList()),
-            //     // )
+            //                 states = locations
+            //                     .where((stateItem) =>
+            //                         stateItem['countryId'].toString() ==
+            //                         onChangedVal)
+            //                     .toList();
+            //                 stateName = null;
+            //               },
+            //               (onValidateVal) {
+            //                 if (onValidateVal == null) {
+            //                   return '나라를 선택하세요.';
+            //                 }
+            //                 return null;
+            //               },
+            //               borderColor: Colors.lightBlueAccent,
+            //               borderFocusColor: Colors.redAccent,
+            //               borderRadius: 10,
+            //             )),
+            //         SizedBox(
+            //             width: MediaQuery.of(context).size.width / 2.5,
+            //             child: FormHelper.dropDownWidget(
+            //               context,
+            //               '지역 선택',
+            //               stateName,
+            //               states,
+            //               (onChangedVal) {
+            //                 if (countriesSelect == true) {
+            //                   setState(() {
+            //                     stateName = onChangedVal;
+            //                     print('선택한 지역 : $onChangedVal');
+            //                   });
+            //                 }
+            //               },
+            //               (onValidate) {
+            //                 return null;
+            //               },
+            //               borderColor: Colors.black,
+            //               borderFocusColor: Colors.redAccent,
+            //               borderRadius: 10,
+            //               optionValue: 'locationName',
+            //             ))
+            //       ],
+            //     ),
             //   ),
-            // ),
+            //   // Center(
+            //   //   child: Container(
+            //   //     width: MediaQuery.of(context).size.width / 1.2,
+            //   //     height: 150,
+            //   //     color: Colors.white,
+            //   //     child:
 
-            // 하단 컨테이너
-            SizedBox(
-                width: MediaQuery.of(context).size.width / 1.2,
-                height: MediaQuery.of(context).size.height - 300,
-                child:
-                    // 검색 전
-                    weatherData.isEmpty && errorMessage == ''
-                        ? const EmptyTextField(content: '지역을 검색해 주세요.')
+            //   //     // 검색 컨테이너
+            //   //     //     Container(
+            //   //     //   width: MediaQuery.of(context).size.width / 4,
+            //   //     //   height: 30,
+            //   //     //   alignment: Alignment.center,
+            //   //     //   decoration: BoxDecoration(
+            //   //     //       color: Colors.white,
+            //   //     //       borderRadius: BorderRadius.circular(5)),
+            //   //     //   child: DropdownButton<String>(
+            //   //     //       value: currentCountryValue,
+            //   //     //       icon: const Icon(Icons.arrow_drop_down),
+            //   //     //       elevation: 1,
+            //   //     //       style: const TextStyle(
+            //   //     //           fontSize: 15, color: Colors.black),
+            //   //     //       underline: const SizedBox.shrink(),
+            //   //     //       onChanged: (String? value) {
+            //   //     //         setState(() {
+            //   //     //           currentCountryValue = value!;
+            //   //     //         });
+            //   //     //       },
+            //   //     //       items: countryItem
+            //   //     //           .map<DropdownMenuItem<String>>((String value) {
+            //   //     //         return DropdownMenuItem<String>(
+            //   //     //           onTap: () {
+            //   //     //             countryNumberChange(value);
+            //   //     //           },
+            //   //     //           value: value,
+            //   //     //           child: Text(value),
+            //   //     //         );
+            //   //     //       }).toList()),
+            //   //     // )
+            //   //   ),
+            //   // ),
 
-                        // 검색 후 에러 발생
-                        : null
-                // weatherData.isEmpty && errorMessage != ''
-                //     ? EmptyTextField(content: errorMessage)
+            //   // 하단 컨테이너
+            //   SizedBox(
+            //       width: MediaQuery.of(context).size.width / 1.2,
+            //       height: MediaQuery.of(context).size.height - 300,
+            //       child:
+            //           // 검색 전
+            //           weatherData.isEmpty && errorMessage == ''
+            //               ? const EmptyTextField(content: '지역을 검색해 주세요.')
 
-                //     // 검색 후 데이터 호출
-                //     : SizedBox(
-                //         child: SingleChildScrollView(
-                //             child: Column(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           crossAxisAlignment: CrossAxisAlignment.center,
-                //           children: [
-                //             // 날씨 정보
-                //             WeatherCard(
-                //               weatherData: weatherData,
-                //               inputText: inputText,
-                //               isBookmark: isBookmark,
-                //               bookmarkIconClick: bookmarkIconClick,
-                //             ),
+            //               // 검색 후 에러 발생
+            //               : weatherData.isEmpty && errorMessage != ''
+            //                   ? EmptyTextField(content: errorMessage)
 
-                //             // 옷 컨테이너
-                //             Container(
-                //                 width:
-                //                     MediaQuery.of(context).size.width,
-                //                 height: 250,
-                //                 decoration: BoxDecoration(
-                //                   color: Colors.white,
-                //                   borderRadius:
-                //                       BorderRadius.circular(10),
-                //                 ),
-                //                 margin: const EdgeInsets.only(
-                //                     top: 30, bottom: 20),
-                //                 padding: const EdgeInsets.all(15),
-                //                 child: Column(
-                //                   children: [
-                //                     // 옷 타이틀
-                //                     Container(
-                //                       width: double.infinity,
-                //                       alignment: Alignment.center,
-                //                       padding: const EdgeInsets.only(
-                //                           top: 5, bottom: 10),
-                //                       child: const Text(
-                //                         '- 오늘의 옷 추천 -',
-                //                         style: TextStyle(
-                //                             fontSize: 20,
-                //                             fontWeight:
-                //                                 FontWeight.w600),
-                //                       ),
-                //                     ),
+            //                   // 검색 후 데이터 호출
+            //                   : SizedBox(
+            //                       child: SingleChildScrollView(
+            //                           child: Column(
+            //                         mainAxisAlignment: MainAxisAlignment.center,
+            //                         crossAxisAlignment: CrossAxisAlignment.center,
+            //                         children: [
+            //                           // 날씨 정보
+            //                           WeatherCard(
+            //                             weatherData: weatherData,
+            //                             inputText: inputText,
+            //                             isBookmark: isBookmark,
+            //                             bookmarkIconClick: bookmarkIconClick,
+            //                           ),
 
-                //                     // 옷 리스트
-                //                     ClothesCard(clothes: clothes)
-                //                   ],
-                //                 ))
-                //           ],
-                //         )),
-                //       )
-                )
-          ]),
-        ),
+            //                           // 옷 컨테이너
+            //                           Container(
+            //                               width:
+            //                                   MediaQuery.of(context).size.width,
+            //                               height: 250,
+            //                               decoration: BoxDecoration(
+            //                                 color: Colors.white,
+            //                                 borderRadius:
+            //                                     BorderRadius.circular(10),
+            //                               ),
+            //                               margin: const EdgeInsets.only(
+            //                                   top: 30, bottom: 20),
+            //                               padding: const EdgeInsets.all(15),
+            //                               child: Column(
+            //                                 children: [
+            //                                   // 옷 타이틀
+            //                                   Container(
+            //                                     width: double.infinity,
+            //                                     alignment: Alignment.center,
+            //                                     padding: const EdgeInsets.only(
+            //                                         top: 5, bottom: 10),
+            //                                     child: const Text(
+            //                                       '- 오늘의 옷 추천 -',
+            //                                       style: TextStyle(
+            //                                           fontSize: 20,
+            //                                           fontWeight:
+            //                                               FontWeight.w600),
+            //                                     ),
+            //                                   ),
+
+            //                                   // 옷 리스트
+            //                                   ClothesCard(clothes: clothes)
+            //                                 ],
+            //                               ))
+            //                         ],
+            //                       )),
+            //                     ))
+            // ]),
+            ),
       ),
     );
   }

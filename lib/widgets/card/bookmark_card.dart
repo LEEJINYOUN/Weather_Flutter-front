@@ -24,9 +24,9 @@ class BookmarkCard extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
               onTap: () => changeKrToEn({
-                    'location_kr': '${bookmarks[index]['location_kr']}',
-                    'location_en': '${bookmarks[index]['location_en']}',
-                    'image_number': '${bookmarks[index]['image_number']}',
+                    'locationKr': '${bookmarks[index]['locationKr']}',
+                    'locationEn': '${bookmarks[index]['locationEn']}',
+                    'imageNumber': '${bookmarks[index]['imageNumber']}',
                   }),
               child: Container(
                   margin: const EdgeInsets.only(left: 10, right: 10),
@@ -38,9 +38,9 @@ class BookmarkCard extends StatelessWidget {
                   ),
                   child: Center(
                       child: Text(
-                    '${bookmarks[index]['location_kr']}',
+                    '${bookmarks[index]['locationKr']}',
                     style: TextStyle(
-                        color: textColor(bookmarks[index]['image_number']),
+                        color: textColor(bookmarks[index]['imageNumber']),
                         fontSize: 18,
                         fontWeight: FontWeight.w600),
                   ))));
