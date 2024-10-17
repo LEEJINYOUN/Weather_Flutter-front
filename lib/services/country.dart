@@ -3,13 +3,13 @@ import 'package:weather_flutter_front/utilities/env_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class LocationMethod {
+class CountryMethod {
   var backendUrl = EnvConstant().backendApi();
 
-  // 나라별 모든 지역 조회
-  Future<dynamic> getAllLocationByCountryId(countryId) async {
+  // 모든 나라 조회
+  Future<dynamic> getAllCountry() async {
     try {
-      var url = '$backendUrl/location/all/$countryId';
+      var url = '$backendUrl/country/all';
       var response = await http.get(
         Uri.parse(url),
         headers: {

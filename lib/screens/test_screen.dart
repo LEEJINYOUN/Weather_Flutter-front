@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:weather_flutter_front/services/country.dart';
+import 'package:weather_flutter_front/services/location.dart';
+import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -9,94 +12,130 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestScreenState extends State<TestScreen> {
-  List<dynamic> countries = [];
-  List<dynamic> stateMasters = [];
-  List<dynamic> states = [];
+  late List<dynamic> states = [];
   String? countryId;
-  String? stateId;
+  String? stateName;
 
   bool countriesSelect = false;
+
+  final List<dynamic> countries = [];
+  final List<dynamic> locations = [];
+
+  // 모든 나라 조회
+  void getAllCountry() async {
+    try {
+      dynamic result = await CountryMethod().getAllCountry();
+
+      setState(() {
+        countries.clear();
+        result.forEach((element) {
+          countries.add(element);
+        });
+      });
+    } catch (e) {
+      debugPrint(e as dynamic);
+      rethrow;
+    }
+  }
+
+  // 나라별 모든 지역 조회
+  void getAllLocationByCountryId() async {
+    try {
+      dynamic result = await LocationMethod().getAllLocationByCountryId(0);
+
+      setState(() {
+        locations.clear();
+        result.forEach((element) {
+          locations.add(element);
+        });
+      });
+    } catch (e) {
+      debugPrint(e as dynamic);
+      rethrow;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    countries.add({'id': 1, 'name': '한국'});
-    countries.add({'id': 2, 'name': '일본'});
-    countries.add({'id': 3, 'name': '중국'});
-
-    stateMasters = [
-      {'ID': 1, 'Name': '대구', 'ParentId': 1},
-      {'ID': 2, 'Name': '서울', 'ParentId': 1},
-      {'ID': 3, 'Name': '포항', 'ParentId': 1},
-      {'ID': 1, 'Name': '오사카', 'ParentId': 2},
-      {'ID': 2, 'Name': '도쿄', 'ParentId': 2},
-      {'ID': 1, 'Name': '베이징', 'ParentId': 3},
-      {'ID': 2, 'Name': '난징', 'ParentId': 3},
-    ];
+    getAllCountry();
+    getAllLocationByCountryId();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('테스트'),
-          backgroundColor: Colors.redAccent,
-        ),
-        body: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              FormHelper.dropDownWidgetWithLabel(
-                context,
-                '나라',
-                "나라 선택",
-                countryId,
-                countries,
-                (onChangedVal) {
-                  setState(() {
-                    countriesSelect = true;
-                  });
-                  countryId = onChangedVal;
-                  print('선택한 나라 : $onChangedVal');
+        resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
+        appBar: const AppBarField(title: '테스트', isActions: false),
+        body: SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 1.2,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      FormHelper.dropDownWidgetWithLabel(
+                        context,
+                        '나라',
+                        "나라 선택",
+                        countryId,
+                        countries,
+                        (onChangedVal) {
+                          setState(() {
+                            countriesSelect = true;
+                          });
+                          countryId = onChangedVal;
+                          print('선택한 나라 : $countryId');
 
-                  states = stateMasters
-                      .where((stateItem) =>
-                          stateItem['ParentId'].toString() ==
-                          onChangedVal.toString())
-                      .toList();
-                  stateId = null;
-                },
-                (onValidateVal) {
-                  if (onValidateVal == null) {
-                    return '나라를 선택하세요.';
-                  }
-
-                  return null;
-                },
-                borderFocusColor: Theme.of(context).primaryColor,
-                borderColor: Theme.of(context).primaryColor,
-                borderRadius: 10,
+                          states = locations
+                              .where((stateItem) =>
+                                  stateItem['countryId'].toString() ==
+                                  onChangedVal)
+                              .toList();
+                          stateName = null;
+                        },
+                        (onValidateVal) {
+                          if (onValidateVal == null) {
+                            return '나라를 선택하세요.';
+                          }
+                          return null;
+                        },
+                        borderFocusColor: Theme.of(context).primaryColor,
+                        borderColor: Theme.of(context).primaryColor,
+                        borderRadius: 10,
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      FormHelper.dropDownWidgetWithLabel(
+                          context, '지역', '지역 선택', stateName, states,
+                          (onChangedVal) {
+                        if (countriesSelect == true) {
+                          setState(() {
+                            stateName = onChangedVal;
+                            print('선택한 지역 : $onChangedVal');
+                          });
+                        }
+                      }, (onValidate) {
+                        return null;
+                      },
+                          borderFocusColor: Theme.of(context).primaryColor,
+                          borderColor: Theme.of(context).primaryColor,
+                          borderRadius: 10,
+                          optionValue: 'locationName',
+                          optionLabel: 'locationName')
+                    ],
+                  ),
+                ),
               ),
-              FormHelper.dropDownWidgetWithLabel(
-                  context, '지역', '지역 선택', stateId, states, (onChangedVal) {
-                if (countriesSelect == true) {
-                  stateId = onChangedVal;
-                  print('선택한 지역 : $onChangedVal');
-                }
-                setState(() {
-                  countriesSelect = false;
-                });
-              }, (onValidate) {
-                return null;
-              },
-                  borderFocusColor: Theme.of(context).primaryColor,
-                  borderColor: Theme.of(context).primaryColor,
-                  borderRadius: 10,
-                  optionValue: 'ID',
-                  optionLabel: 'Name')
-            ],
-          ),
-        ));
+            ),
+          ],
+        )));
   }
 }

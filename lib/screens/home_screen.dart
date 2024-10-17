@@ -106,20 +106,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 나라 별 지역 리스트 조회
   void countrySelect(number) async {
-    if (number != 0) {
-      try {
-        // 나라 별 지역 리스트 API 연동
-        dynamic result = await LocationMethod().getLocationByCountryId(number);
-        setState(() {
-          countryLocations.clear();
-          result.forEach((element) {
-            countryLocations.add(LocationModel.fromJson(element));
-          });
-        });
-      } catch (e) {
-        debugPrint(e as dynamic);
-      }
-    }
+    // if (number != 0) {
+    //   try {
+    //     // 나라 별 지역 리스트 API 연동
+    //     dynamic result = await LocationMethod().getLocationByCountryId(number);
+    //     setState(() {
+    //       countryLocations.clear();
+    //       result.forEach((element) {
+    //         countryLocations.add(LocationModel.fromJson(element));
+    //       });
+    //     });
+    //   } catch (e) {
+    //     debugPrint(e as dynamic);
+    //   }
+    // }
   }
 
   // 검색하기
