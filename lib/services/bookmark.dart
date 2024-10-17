@@ -6,10 +6,10 @@ import 'package:weather_flutter_front/utilities/env_constant.dart';
 class BookmarkMethod {
   var backendUrl = EnvConstant().backendApi();
 
-  // 유저별 즐겨찾기 목록 조회
+  // 유저별 모든 즐겨찾기 조회
   Future<dynamic> getBookmarks(int userId) async {
     try {
-      var url = '$backendUrl/bookmark/$userId';
+      var url = '$backendUrl/bookmark/all/$userId';
       var response = await http.get(
         Uri.parse(url),
         headers: {
@@ -37,7 +37,7 @@ class BookmarkMethod {
   Future<dynamic> getBookmarkLocation(
       {required int userId, required String locationKr}) async {
     try {
-      var url = '$backendUrl/bookmark/$userId/$locationKr';
+      var url = '$backendUrl/bookmark/$userId?locationKr=$locationKr';
       var response = await http.get(
         Uri.parse(url),
         headers: {
@@ -69,12 +69,12 @@ class BookmarkMethod {
     required int imageNumber,
   }) async {
     try {
-      var url = '$backendUrl/bookmark/$userId';
+      var url = '$backendUrl/bookmark/update/$userId';
 
       var reqBody = {
-        'location_kr': locationKr,
-        'location_en': locationEn,
-        'image_number': imageNumber,
+        locationKr,
+        locationEn,
+        imageNumber,
       };
       var response = await http.post(Uri.parse(url),
           headers: {

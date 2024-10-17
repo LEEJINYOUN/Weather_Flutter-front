@@ -5,6 +5,7 @@ import 'package:weather_flutter_front/models/location_model.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
+import 'package:weather_flutter_front/services/country.dart';
 import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
@@ -15,6 +16,7 @@ import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -60,6 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getUserInfo();
+
+    // 추가
+    getAllCountry();
+    getAllLocationByCountryId();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -83,51 +89,51 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // 나라 번호 선택
-  void countryNumberChange(text) {
-    if (text == '나라 선택') {
-      setState(() {
-        countryNumber = 0;
-      });
-    } else if (text == '한국') {
-      setState(() {
-        countryNumber = 1;
-      });
-    } else if (text == '일본') {
-      setState(() {
-        countryNumber = 2;
-      });
-    } else if (text == '중국') {
-      setState(() {
-        countryNumber = 3;
-      });
-    }
-    countrySelect(countryNumber);
-  }
+  // void countryNumberChange(text) {
+  //   if (text == '나라 선택') {
+  //     setState(() {
+  //       countryNumber = 0;
+  //     });
+  //   } else if (text == '한국') {
+  //     setState(() {
+  //       countryNumber = 1;
+  //     });
+  //   } else if (text == '일본') {
+  //     setState(() {
+  //       countryNumber = 2;
+  //     });
+  //   } else if (text == '중국') {
+  //     setState(() {
+  //       countryNumber = 3;
+  //     });
+  //   }
+  //   countrySelect(countryNumber);
+  // }
 
   // 나라 별 지역 리스트 조회
-  void countrySelect(number) async {
-    // if (number != 0) {
-    //   try {
-    //     // 나라 별 지역 리스트 API 연동
-    //     dynamic result = await LocationMethod().getLocationByCountryId(number);
-    //     setState(() {
-    //       countryLocations.clear();
-    //       result.forEach((element) {
-    //         countryLocations.add(LocationModel.fromJson(element));
-    //       });
-    //     });
-    //   } catch (e) {
-    //     debugPrint(e as dynamic);
-    //   }
-    // }
-  }
+  // void countrySelect(number) async {
+  //   if (number != 0) {
+  //     try {
+  //       // 나라 별 지역 리스트 API 연동
+  //       dynamic result = await LocationMethod().getLocationByCountryId(number);
+  //       setState(() {
+  //         countryLocations.clear();
+  //         result.forEach((element) {
+  //           countryLocations.add(LocationModel.fromJson(element));
+  //         });
+  //       });
+  //     } catch (e) {
+  //       debugPrint(e as dynamic);
+  //     }
+  //   }
+  // }
 
   // 검색하기
   void searchActive() {
     setState(() {
       errorMessage = '';
     });
-    translateText();
+    // translateText();
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
@@ -151,16 +157,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // 검색어 번역
-  Future<void> translateText() async {
-    final translated = await translator.translate(searchController.text,
-        from: inputLanguage, to: outputLanguage);
+  // Future<void> translateText() async {
+  //   final translated = await translator.translate(searchController.text,
+  //       from: inputLanguage, to: outputLanguage);
 
-    setState(() {
-      inputText = searchController.text;
-      outputText = translated.text;
-    });
-    getWeather(outputText);
-  }
+  //   setState(() {
+  //     inputText = searchController.text;
+  //     outputText = translated.text;
+  //   });
+  //   getWeather(outputText);
+  // }
 
   // 날씨 정보 가져오기
   void getWeather(String cityName) async {
@@ -246,6 +252,48 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // 추가
+  late List<dynamic> states = [];
+  String? countryId;
+  String? stateName;
+  bool countriesSelect = false;
+  final List<dynamic> countries = [];
+  final List<dynamic> locations = [];
+
+  // 모든 나라 조회
+  void getAllCountry() async {
+    try {
+      dynamic result = await CountryMethod().getAllCountry();
+
+      setState(() {
+        countries.clear();
+        result.forEach((element) {
+          countries.add(element);
+        });
+      });
+    } catch (e) {
+      debugPrint(e as dynamic);
+      rethrow;
+    }
+  }
+
+  // 나라별 모든 지역 조회
+  void getAllLocationByCountryId() async {
+    try {
+      dynamic result = await LocationMethod().getAllLocationByCountryId(0);
+
+      setState(() {
+        locations.clear();
+        result.forEach((element) {
+          locations.add(element);
+        });
+      });
+    } catch (e) {
+      debugPrint(e as dynamic);
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -264,51 +312,110 @@ class _HomeScreenState extends State<HomeScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             // 상단 컨테이너
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width / 1.2,
-                height: 150,
-                child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 80,
-                    margin: const EdgeInsets.symmetric(vertical: 15),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    alignment: Alignment.center,
-                    child:
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 150,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: FormHelper.dropDownWidget(
+                        context,
+                        "나라 선택",
+                        countryId,
+                        countries,
+                        (onChangedVal) {
+                          setState(() {
+                            countriesSelect = true;
+                          });
+                          countryId = onChangedVal;
+                          print('선택한 나라 : $countryId');
 
-                        // 검색 컨테이너
-                        Container(
-                      width: MediaQuery.of(context).size.width / 4,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: DropdownButton<String>(
-                          value: currentCountryValue,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          elevation: 1,
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.black),
-                          underline: const SizedBox.shrink(),
-                          onChanged: (String? value) {
+                          states = locations
+                              .where((stateItem) =>
+                                  stateItem['countryId'].toString() ==
+                                  onChangedVal)
+                              .toList();
+                          stateName = null;
+                        },
+                        (onValidateVal) {
+                          if (onValidateVal == null) {
+                            return '나라를 선택하세요.';
+                          }
+                          return null;
+                        },
+                        borderColor: Colors.lightBlueAccent,
+                        borderFocusColor: Colors.redAccent,
+                        borderRadius: 10,
+                      )),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: FormHelper.dropDownWidget(
+                        context,
+                        '지역 선택',
+                        stateName,
+                        states,
+                        (onChangedVal) {
+                          if (countriesSelect == true) {
                             setState(() {
-                              currentCountryValue = value!;
+                              stateName = onChangedVal;
+                              print('선택한 지역 : $onChangedVal');
                             });
-                          },
-                          items: countryItem
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              onTap: () {
-                                countryNumberChange(value);
-                              },
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList()),
-                    )),
+                          }
+                        },
+                        (onValidate) {
+                          return null;
+                        },
+                        borderColor: Colors.black,
+                        borderFocusColor: Colors.redAccent,
+                        borderRadius: 10,
+                        optionValue: 'locationName',
+                      ))
+                ],
               ),
             ),
+            // Center(
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width / 1.2,
+            //     height: 150,
+            //     color: Colors.white,
+            //     child:
+
+            //     // 검색 컨테이너
+            //     //     Container(
+            //     //   width: MediaQuery.of(context).size.width / 4,
+            //     //   height: 30,
+            //     //   alignment: Alignment.center,
+            //     //   decoration: BoxDecoration(
+            //     //       color: Colors.white,
+            //     //       borderRadius: BorderRadius.circular(5)),
+            //     //   child: DropdownButton<String>(
+            //     //       value: currentCountryValue,
+            //     //       icon: const Icon(Icons.arrow_drop_down),
+            //     //       elevation: 1,
+            //     //       style: const TextStyle(
+            //     //           fontSize: 15, color: Colors.black),
+            //     //       underline: const SizedBox.shrink(),
+            //     //       onChanged: (String? value) {
+            //     //         setState(() {
+            //     //           currentCountryValue = value!;
+            //     //         });
+            //     //       },
+            //     //       items: countryItem
+            //     //           .map<DropdownMenuItem<String>>((String value) {
+            //     //         return DropdownMenuItem<String>(
+            //     //           onTap: () {
+            //     //             countryNumberChange(value);
+            //     //           },
+            //     //           value: value,
+            //     //           child: Text(value),
+            //     //         );
+            //     //       }).toList()),
+            //     // )
+            //   ),
+            // ),
 
             // 하단 컨테이너
             SizedBox(
@@ -320,61 +427,63 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? const EmptyTextField(content: '지역을 검색해 주세요.')
 
                         // 검색 후 에러 발생
-                        : weatherData.isEmpty && errorMessage != ''
-                            ? EmptyTextField(content: errorMessage)
+                        : null
+                // weatherData.isEmpty && errorMessage != ''
+                //     ? EmptyTextField(content: errorMessage)
 
-                            // 검색 후 데이터 호출
-                            : SizedBox(
-                                child: SingleChildScrollView(
-                                    child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    // 날씨 정보
-                                    WeatherCard(
-                                      weatherData: weatherData,
-                                      inputText: inputText,
-                                      isBookmark: isBookmark,
-                                      bookmarkIconClick: bookmarkIconClick,
-                                    ),
+                //     // 검색 후 데이터 호출
+                //     : SizedBox(
+                //         child: SingleChildScrollView(
+                //             child: Column(
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           crossAxisAlignment: CrossAxisAlignment.center,
+                //           children: [
+                //             // 날씨 정보
+                //             WeatherCard(
+                //               weatherData: weatherData,
+                //               inputText: inputText,
+                //               isBookmark: isBookmark,
+                //               bookmarkIconClick: bookmarkIconClick,
+                //             ),
 
-                                    // 옷 컨테이너
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 250,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                            top: 30, bottom: 20),
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          children: [
-                                            // 옷 타이틀
-                                            Container(
-                                              width: double.infinity,
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.only(
-                                                  top: 5, bottom: 10),
-                                              child: const Text(
-                                                '- 오늘의 옷 추천 -',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            ),
+                //             // 옷 컨테이너
+                //             Container(
+                //                 width:
+                //                     MediaQuery.of(context).size.width,
+                //                 height: 250,
+                //                 decoration: BoxDecoration(
+                //                   color: Colors.white,
+                //                   borderRadius:
+                //                       BorderRadius.circular(10),
+                //                 ),
+                //                 margin: const EdgeInsets.only(
+                //                     top: 30, bottom: 20),
+                //                 padding: const EdgeInsets.all(15),
+                //                 child: Column(
+                //                   children: [
+                //                     // 옷 타이틀
+                //                     Container(
+                //                       width: double.infinity,
+                //                       alignment: Alignment.center,
+                //                       padding: const EdgeInsets.only(
+                //                           top: 5, bottom: 10),
+                //                       child: const Text(
+                //                         '- 오늘의 옷 추천 -',
+                //                         style: TextStyle(
+                //                             fontSize: 20,
+                //                             fontWeight:
+                //                                 FontWeight.w600),
+                //                       ),
+                //                     ),
 
-                                            // 옷 리스트
-                                            ClothesCard(clothes: clothes)
-                                          ],
-                                        ))
-                                  ],
-                                )),
-                              ))
+                //                     // 옷 리스트
+                //                     ClothesCard(clothes: clothes)
+                //                   ],
+                //                 ))
+                //           ],
+                //         )),
+                //       )
+                )
           ]),
         ),
       ),

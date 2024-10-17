@@ -6,7 +6,7 @@ import 'package:weather_flutter_front/utilities/env_constant.dart';
 class ClothesMethod {
   var backendUrl = EnvConstant().backendApi();
 
-  // 지역 이름으로 조회
+  // 기온 별 옷 조회
   Future<dynamic> getClothesByTemp(temp) async {
     try {
       var url = '$backendUrl/clothes/$temp';

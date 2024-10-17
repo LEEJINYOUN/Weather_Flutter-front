@@ -16,6 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
         debugShowCheckedModeBanner: false, // 디버그 배너 삭제
-        home: TestScreen()); // 기본 화면 (로그인 확인 체크)
+        home: LoginStatus()); // 기본 화면 (로그인 확인 체크)
   }
 }

@@ -72,17 +72,17 @@ class _TestScreenState extends State<TestScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width / 1.2,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      FormHelper.dropDownWidgetWithLabel(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.center,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: FormHelper.dropDownWidgetWithLabel(
                         context,
-                        '나라',
+                        '',
                         "나라 선택",
                         countryId,
                         countries,
@@ -106,15 +106,19 @@ class _TestScreenState extends State<TestScreen> {
                           }
                           return null;
                         },
-                        borderFocusColor: Theme.of(context).primaryColor,
-                        borderColor: Theme.of(context).primaryColor,
+                        borderFocusColor: Colors.lightBlueAccent,
+                        borderColor: Colors.black,
                         borderRadius: 10,
+                        labelFontSize: 0,
                       ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      FormHelper.dropDownWidgetWithLabel(
-                          context, '지역', '지역 선택', stateName, states,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: FormHelper.dropDownWidgetWithLabel(
+                          context, '', '지역 선택', stateName, states,
                           (onChangedVal) {
                         if (countriesSelect == true) {
                           setState(() {
@@ -125,13 +129,14 @@ class _TestScreenState extends State<TestScreen> {
                       }, (onValidate) {
                         return null;
                       },
-                          borderFocusColor: Theme.of(context).primaryColor,
-                          borderColor: Theme.of(context).primaryColor,
+                          borderFocusColor: Colors.lightBlueAccent,
+                          borderColor: Colors.black,
                           borderRadius: 10,
+                          labelFontSize: 0,
                           optionValue: 'locationName',
-                          optionLabel: 'locationName')
-                    ],
-                  ),
+                          optionLabel: 'locationName'),
+                    )
+                  ],
                 ),
               ),
             ),

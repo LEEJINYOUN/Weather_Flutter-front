@@ -125,9 +125,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   // 선택한 지역 이름 번역
   void changeKrToEn(Map<String, String> data) {
     setState(() {
-      inputText = data['location_kr'];
-      outputText = data['location_en'];
-      outputNumber = data['image_number'];
+      inputText = data['locationKr'];
+      outputText = data['locationEn'];
+      outputNumber = data['imageNumber'];
     });
     getBookmark();
     getWeather(outputText);
