@@ -39,9 +39,9 @@ class _TestScreenState extends State<TestScreen> {
   }
 
   // 나라별 모든 지역 조회
-  void getAllLocationByCountryId() async {
+  void getAllLocation() async {
     try {
-      dynamic result = await LocationMethod().getAllLocationByCountryId(0);
+      dynamic result = await LocationMethod().getAllLocation();
 
       setState(() {
         locations.clear();
@@ -59,7 +59,7 @@ class _TestScreenState extends State<TestScreen> {
   void initState() {
     super.initState();
     getAllCountry();
-    getAllLocationByCountryId();
+    getAllLocation();
   }
 
   @override

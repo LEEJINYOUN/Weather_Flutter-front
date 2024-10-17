@@ -7,7 +7,7 @@ class WeatherMethod {
   var weatherApiKey = EnvConstant().weatherApiKey();
   // 검색한 날씨 정보
   Future<dynamic> getWeatherInfo(
-    String cityName,
+    String? cityName,
   ) async {
     try {
       var url =
@@ -20,6 +20,7 @@ class WeatherMethod {
       );
 
       var jsonResponse = jsonDecode(response.body);
+      // print(jsonResponse);
 
       if (response.statusCode == 200) {
         // 데이터 값 받기 성공

@@ -7,9 +7,9 @@ class LocationMethod {
   var backendUrl = EnvConstant().backendApi();
 
   // 나라별 모든 지역 조회
-  Future<dynamic> getAllLocationByCountryId(countryId) async {
+  Future<dynamic> getAllLocation() async {
     try {
-      var url = '$backendUrl/location/all/$countryId';
+      var url = '$backendUrl/location/all';
       var response = await http.get(
         Uri.parse(url),
         headers: {
@@ -21,7 +21,7 @@ class LocationMethod {
 
       if (response.statusCode == 200) {
         // 데이터 값 받기 성공
-        debugPrint('모든 나라 조회 성공' as dynamic);
+        debugPrint('나라별 모든 지역 조회 성공' as dynamic);
         return jsonResponse;
       } else {
         // 데이터 값 받기 실패
