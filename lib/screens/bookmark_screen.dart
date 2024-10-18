@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/models/clothes_model.dart';
-import 'package:weather_flutter_front/services/authentication.dart';
+
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
+import 'package:weather_flutter_front/utilities/user_info.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:weather_flutter_front/widgets/container/bookmark_container_field.dart';
 import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
@@ -22,12 +23,6 @@ class BookmarkScreen extends StatefulWidget {
 }
 
 class _BookmarkScreenState extends State<BookmarkScreen> {
-  // storage
-  final storage = const FlutterSecureStorage();
-
-  // 입력 컨트롤러
-  final TextEditingController searchController = TextEditingController();
-
   // cdn 주소
   var imagesUrl = EnvConstant().imageFrontUrl();
 
@@ -52,29 +47,22 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   @override
   void initState() {
     super.initState();
-    getUserInfo();
-    print(changeKrToEn.runtimeType);
+    userData();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
     super.dispose();
-    searchController.dispose();
   }
 
   // 유저 정보 가져오기
-  void getUserInfo() async {
-    try {
-      var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().getUser(token: token);
-      setState(() {
-        userInfo = getUserInfo;
-      });
-      getBookmarks();
-    } catch (e) {
-      debugPrint(e as dynamic);
-    }
+  void userData() async {
+    dynamic data = await getUserInfo();
+    setState(() {
+      userInfo = data;
+    });
+    getBookmarks();
   }
 
   // 즐겨찾기 리스트 가져오기

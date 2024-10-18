@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:weather_flutter_front/models/clothes_model.dart';
-import 'package:weather_flutter_front/services/authentication.dart';
+
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/country.dart';
@@ -10,6 +10,7 @@ import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
+import 'package:weather_flutter_front/utilities/user_info.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
 import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
 import 'package:weather_flutter_front/widgets/container/select_box_container_field.dart';
@@ -26,12 +27,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // storage
-  final storage = const FlutterSecureStorage();
-
-  // 입력 컨트롤러
-  final TextEditingController searchController = TextEditingController();
-
   // cdn 주소
   String imagesUrl = EnvConstant().imageFrontUrl();
 
@@ -66,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getUserInfo();
+    userData();
     getAllCountry();
     getAllLocation();
   }
@@ -75,20 +70,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    searchController.dispose();
   }
 
   // 유저 정보 가져오기
-  void getUserInfo() async {
-    try {
-      var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().getUser(token: token);
-      setState(() {
-        userInfo = getUserInfo;
-      });
-    } catch (e) {
-      debugPrint(e as dynamic);
-    }
+  void userData() async {
+    dynamic data = await getUserInfo();
+    setState(() {
+      userInfo = data;
+    });
   }
 
   // 모든 나라 조회
@@ -175,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
         weatherData = result;
         currentTemp =
             double.parse(celsiusConversion(temp: weatherData["main"]["temp"]));
-        searchController.text = '';
+
         isClick = true;
       });
       getClothesTemp();
