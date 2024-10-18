@@ -41,7 +41,7 @@ class SelectBoxContainerField extends StatelessWidget {
                 }
                 return null;
               },
-              borderColor: Colors.lightBlueAccent,
+              borderColor: Colors.black,
               borderFocusColor: Colors.redAccent,
               borderRadius: 10,
             ),
@@ -56,10 +56,7 @@ class SelectBoxContainerField extends StatelessWidget {
                 stateName,
                 states,
                 (onChangedVal) => subSelectOnChangedVal(onChangedVal),
-                (onValidateVal) {
-                  if (onValidateVal == null) {
-                    return '나라를 선택하세요.';
-                  }
+                (onValidate) {
                   return null;
                 },
                 borderColor: Colors.black,

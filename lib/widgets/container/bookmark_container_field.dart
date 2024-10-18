@@ -7,14 +7,12 @@ class BookmarkContainerField extends StatelessWidget {
   final bool isBookmarkList;
   final dynamic bookmarks;
   final dynamic changeKrToEn;
-  final dynamic textColor;
 
   const BookmarkContainerField({
     super.key,
     required this.isBookmarkList,
     required this.bookmarks,
     required this.changeKrToEn,
-    required this.textColor,
   });
 
   @override
@@ -33,7 +31,6 @@ class BookmarkContainerField extends StatelessWidget {
             BookmarkCard(
                 bookmarks: bookmarks,
                 changeKrToEn: changeKrToEn,
-                textColor: textColor,
                 imagesUrl: imagesUrl)
             : null);
   }

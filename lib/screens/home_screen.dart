@@ -16,6 +16,7 @@ import 'package:weather_flutter_front/widgets/container/select_box_container_fie
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
 import 'package:translator/translator.dart';
 import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
+import 'dart:math';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double currentTemp = 0;
   bool isBookmark = false;
   bool isClick = false;
+  int getImageNumber = 0;
   String errorMessage = '';
 
   // state 진입시 함수 실행
@@ -209,12 +211,17 @@ class _HomeScreenState extends State<HomeScreen> {
   // 즐겨찾기 기능
   void bookmarkIconClick() async {
     try {
+      // 랜덤 번호 생성
+      setState(() {
+        getImageNumber = Random().nextInt(5) + 1;
+      });
+
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
           userId: userInfo['id'],
           locationKr: inputText,
           locationEn: outputText,
-          imageNumber: 1);
+          imageNumber: getImageNumber);
 
       if (result != true) {
         setState(() {
@@ -255,11 +262,11 @@ class _HomeScreenState extends State<HomeScreen> {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
-              '$imagesUrl/images/${!isClick ? 'bg-image.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
+              '$imagesUrl/images/${!isClick ? 'bg-main.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(155, 147, 147, 147),
+        backgroundColor: const Color.fromARGB(155, 128, 128, 128),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
         appBar: const AppBarField(title: '홈', isActions: true),
         body: SingleChildScrollView(

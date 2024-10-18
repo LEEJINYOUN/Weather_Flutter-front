@@ -5,14 +5,12 @@ class BookmarkCard extends StatelessWidget {
   final dynamic bookmarks;
   final dynamic changeKrToEn;
   final String imagesUrl;
-  final dynamic textColor;
 
   const BookmarkCard({
     super.key,
     required this.bookmarks,
     required this.changeKrToEn,
     required this.imagesUrl,
-    required this.textColor,
   });
 
   @override
@@ -34,13 +32,14 @@ class BookmarkCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage('$imagesUrl/images/bg-image.jpg')),
+                        image: NetworkImage(
+                            '$imagesUrl/images/bg-image${bookmarks[index]['imageNumber']}.jpg')),
                   ),
                   child: Center(
                       child: Text(
                     '${bookmarks[index]['locationKr']}',
-                    style: TextStyle(
-                        color: textColor(bookmarks[index]['imageNumber']),
+                    style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600),
                   ))));

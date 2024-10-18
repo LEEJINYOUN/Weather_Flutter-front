@@ -158,15 +158,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
-  // 즐겨찾기 리스트 제목 색 변환
-  dynamic textColor(int number) {
-    if (number == 1 || number == 2) {
-      return Colors.white;
-    } else {
-      return Colors.black;
-    }
-  }
-
   // 기온 별 옷 리스트 가져오기
   void getClothesTemp() async {
     if (weatherData.isNotEmpty) {
@@ -192,7 +183,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(
-                '$imagesUrl/images/${!isClick ? 'bg-image.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
+                '$imagesUrl/images/${!isClick ? 'bg-main.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
           ),
         ),
         child: Scaffold(
@@ -229,7 +220,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                           isBookmarkList: isBookmarkList,
                           bookmarks: bookmarks,
                           changeKrToEn: changeKrToEn,
-                          textColor: textColor,
                         )
                       ],
                     ),
