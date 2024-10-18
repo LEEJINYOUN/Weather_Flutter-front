@@ -261,12 +261,13 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
+
           image: NetworkImage(
               '$imagesUrl/images/${!isClick ? 'bg-main.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(155, 128, 128, 128),
+        backgroundColor: const Color.fromARGB(155, 147, 147, 147),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
         appBar: const AppBarField(title: '홈', isActions: true),
         body: SingleChildScrollView(

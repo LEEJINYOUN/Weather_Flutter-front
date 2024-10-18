@@ -18,7 +18,8 @@ class EmptyTextField extends StatelessWidget {
       children: [
         Text(
           content,
-          style: const TextStyle(fontSize: 25, color: Colors.white),
+          style: const TextStyle(
+              fontSize: 22, color: Colors.white, fontWeight: FontWeight.w500),
         ),
       ],
     );
