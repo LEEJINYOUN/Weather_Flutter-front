@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:weather_flutter_front/screens/bookmark_screen.dart';
 import 'package:weather_flutter_front/screens/home_screen.dart';
-import 'package:weather_flutter_front/screens/profile_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -27,29 +26,28 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
   final appScreens = [
     const HomeScreen(),
     const BookmarkScreen(),
-    const ProfileScreen(),
   ];
 
   // 선택 인덱스 초기화
-  int _selectedIndex = 1;
+  int selectedIndex = 0;
 
   // 하단 메뉴 버튼 변경
-  void _onItemTapped(int index) {
+  void itemOnTap(int index) {
     // setState => 실시간으로 변경
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: appScreens[_selectedIndex],
+        body: appScreens[selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
+            currentIndex: selectedIndex,
+            onTap: itemOnTap,
             selectedItemColor: Colors.blueGrey,
-            unselectedItemColor: const Color(0xff526400),
+            unselectedItemColor: const Color.fromARGB(255, 98, 114, 180),
             showUnselectedLabels: false,
             showSelectedLabels: false,
             items: const [
@@ -61,10 +59,6 @@ class _BottomNavBarState extends State<BottomNavBarContainer> {
                   icon: Icon(FluentSystemIcons.ic_fluent_heart_regular),
                   activeIcon: Icon(FluentSystemIcons.ic_fluent_heart_filled),
                   label: 'Bookmark'),
-              BottomNavigationBarItem(
-                  icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
-                  activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
-                  label: 'Profile'),
             ]));
   }
 }

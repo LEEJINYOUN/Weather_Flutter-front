@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/screens/login_screen.dart';
 import 'package:weather_flutter_front/services/authentication.dart';
-import 'package:weather_flutter_front/utils/dialog.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
-import 'package:weather_flutter_front/utils/validate.dart';
+import 'package:weather_flutter_front/utilities/dialog.dart';
+import 'package:weather_flutter_front/utilities/validation.dart';
 import 'package:weather_flutter_front/widgets/button/blue_button.dart';
 import 'package:weather_flutter_front/widgets/form/text_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
-import 'package:weather_flutter_front/widgets/icon/logo_field.dart';
+import 'package:weather_flutter_front/widgets/icon/main_logo_field.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -102,10 +101,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       } catch (e) {
-        dataPrint(text: e);
+        debugPrint(e as dynamic);
       }
     } else {
-      dataPrint(text: isCheckValidate);
+      debugPrint(isCheckValidate as dynamic);
     }
   }
 
@@ -114,16 +113,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-      appBar: const AppBarField(title: '회원가입'),
+      appBar: const AppBarField(title: '회원가입', isActions: false),
       body: SafeArea(
           child: Form(
               key: formField,
               child: Column(
                 children: [
-                  Flexible(
+                  // 로고 아이콘
+                  const Flexible(
                     flex: 3,
-                    child: Center(child: LogoField(name: 'sun')),
+                    child: Center(child: MainLogoField()),
                   ),
+
+                  // 폼 컨테이너
                   Flexible(
                     flex: 7,
                     child: Center(

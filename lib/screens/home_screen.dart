@@ -1,15 +1,23 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:weather_flutter_front/services/authentication.dart';
+
+import 'package:weather_flutter_front/models/clothes_model.dart';
+
 import 'package:weather_flutter_front/services/bookmark.dart';
-import 'package:weather_flutter_front/services/weather.dart';
+import 'package:weather_flutter_front/services/clothes.dart';
+import 'package:weather_flutter_front/services/country.dart';
 import 'package:weather_flutter_front/services/location.dart';
-import 'package:weather_flutter_front/utils/constant.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:weather_flutter_front/services/weather.dart';
+import 'package:weather_flutter_front/utilities/bg_change.dart';
+import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
+import 'package:weather_flutter_front/utilities/env_constant.dart';
+import 'package:weather_flutter_front/utilities/user_info.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
+import 'package:weather_flutter_front/widgets/container/select_box_container_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:translator/translator.dart';
+import 'package:weather_flutter_front/widgets/text/empty_text_field.dart';
+import 'dart:math';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,131 +27,190 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // storage
-  final storage = const FlutterSecureStorage();
-
-  // 입력 컨트롤러
-  final TextEditingController searchController = TextEditingController();
-
   // cdn 주소
-  var imagesUrl = EnvData().iconsUrl();
+  String imagesUrl = EnvConstant().imageFrontUrl();
 
-  // 변수
+  // 나라, 지역 선택관련 변수
+  late List<dynamic> states = [];
+  dynamic countryId;
+  dynamic stateName;
+  bool countriesSelect = false;
+  final List<dynamic> countries = [];
+  final List<dynamic> locations = [];
+
+  // 구글 번역 선언
+  final translator = GoogleTranslator();
+
+  // 번역관련 변수
+  String inputText = '';
+  String outputText = '';
+  String inputLanguage = 'ko';
+  String outputLanguage = 'en';
+
+  // 기타 변수
   Map<String, dynamic> userInfo = {};
-  List<dynamic> locations = [];
   Map<String, dynamic> weatherData = {};
-  Map<String, dynamic> searched = {
-    'id': 0,
-    'location_kr': "",
-    'location_en': "",
-  };
+  final List<ClothesModel> clothes = [];
+  double currentTemp = 0;
   bool isBookmark = false;
-  int imageNumber = 0;
-  String? selectedValue;
+  bool isClick = false;
+  int getImageNumber = 0;
+  String errorMessage = '';
 
   // state 진입시 함수 실행
   @override
   void initState() {
-    getLocations();
-    getUserInfo();
     super.initState();
+    userData();
+    getAllCountry();
+    getAllLocation();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
   }
 
   // 유저 정보 가져오기
-  void getUserInfo() async {
+  void userData() async {
+    dynamic data = await getUserInfo();
+    setState(() {
+      userInfo = data;
+    });
+  }
+
+  // 모든 나라 조회
+  void getAllCountry() async {
     try {
-      var token = await storage.read(key: "token");
-      var getUserInfo = await AuthMethod().getUser(token: token);
+      dynamic result = await CountryMethod().getAllCountry();
+
       setState(() {
-        userInfo = getUserInfo;
+        countries.clear();
+        result.forEach((element) {
+          countries.add(element);
+        });
       });
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
+      rethrow;
     }
   }
 
-  // 지역 리스트 가져오기
-  void getLocations() async {
+  // 나라별 모든 지역 조회
+  void getAllLocation() async {
     try {
-      dynamic result = await LocationMethod().getLocationList();
+      dynamic result = await LocationMethod().getAllLocation();
+
       setState(() {
-        locations = result;
+        locations.clear();
+        result.forEach((element) {
+          locations.add(element);
+        });
       });
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
       rethrow;
     }
+  }
+
+  // 선택 대분류 값 변경
+  void mainSelectOnChangedVal(onChangedVal) {
+    setState(() {
+      countriesSelect = true;
+    });
+    countryId = onChangedVal;
+
+    states = locations
+        .where((stateItem) => stateItem['countryId'].toString() == onChangedVal)
+        .toList();
+    stateName = '지역 선택';
+  }
+
+  // 선택 소분류 값 변경
+  void subSelectOnChangedVal(onChangedVal) {
+    if (countriesSelect == true) {
+      setState(() {
+        stateName = onChangedVal;
+        translateText();
+      });
+    }
+  }
+
+  // 검색할 지역 번역
+  Future<void> translateText() async {
+    final translated = await translator.translate(stateName,
+        from: inputLanguage, to: outputLanguage);
+
+    setState(() {
+      inputText = stateName;
+      outputText = translated.text;
+    });
+    getWeather(outputText);
   }
 
   // 날씨 정보 가져오기
   void getWeather(String cityName) async {
     try {
+      // 정보 초기화
+      setState(() {
+        weatherData = {};
+        currentTemp = 0;
+        errorMessage = '';
+        isClick = false;
+      });
       dynamic result = await WeatherMethod().getWeatherInfo(cityName);
       setState(() {
         weatherData = result;
+        currentTemp =
+            double.parse(celsiusConversion(temp: weatherData["main"]["temp"]));
+
+        isClick = true;
       });
+      getClothesTemp();
+      getBookmark();
     } catch (e) {
-      dataPrint(text: e);
+      setState(() {
+        errorMessage = '등록된 지역이 없습니다.';
+      });
+      debugPrint(e as dynamic);
     }
   }
 
   // 즐겨찾기 지역 조회
   void getBookmark() async {
     try {
-      dynamic result = await BookmarkMethod().getBookmarkLocation(
-          userId: userInfo['id'], locationId: searched['id']);
+      dynamic result = await BookmarkMethod()
+          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
+
       if (result != 0) {
         setState(() {
           isBookmark = true;
         });
+      } else {
+        setState(() {
+          isBookmark = false;
+        });
       }
     } catch (e) {
-      dataPrint(text: e);
-    }
-  }
-
-  // 이름으로 지역 검색
-  void getLocationName(name) async {
-    try {
-      dynamic result = await LocationMethod().getLocationByName(name);
-      setState(() {
-        searched['id'] = result['id'];
-        searched['location_kr'] = result['location_kr'];
-        searched['location_en'] = result['location_en'];
-      });
-      getBookmark();
-      getWeather(searched['location_en']);
-      setState(() {
-        isBookmark = false;
-      });
-    } catch (e) {
-      dataPrint(text: e);
-      rethrow;
+      debugPrint(e as dynamic);
     }
   }
 
   // 즐겨찾기 기능
   void bookmarkIconClick() async {
     try {
-      // 랜덤 숫자
+      // 랜덤 번호 생성
       setState(() {
-        imageNumber = Random().nextInt(5) + 1;
+        getImageNumber = Random().nextInt(5) + 1;
       });
 
       // 즐겨찾기 추가 및 삭제 API 연동
       dynamic result = await BookmarkMethod().editBookmark(
           userId: userInfo['id'],
-          locationId: searched['id'],
-          locationKr: searched['location_kr'],
-          locationEn: searched['location_en'],
-          imageNumber: imageNumber);
+          locationKr: inputText,
+          locationEn: outputText,
+          imageNumber: getImageNumber);
 
       if (result != true) {
         setState(() {
@@ -155,7 +222,25 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
+    }
+  }
+
+  // 기온 별 옷 리스트 가져오기
+  void getClothesTemp() async {
+    if (weatherData.isNotEmpty) {
+      try {
+        dynamic result = await ClothesMethod().getClothesByTemp(currentTemp);
+        setState(() {
+          clothes.clear();
+          result.forEach((element) {
+            clothes.add(ClothesModel.fromJson(element));
+          });
+        });
+      } catch (e) {
+        debugPrint(e as dynamic);
+        rethrow;
+      }
     }
   }
 
@@ -165,141 +250,69 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage('$imagesUrl/images/bg_image1.jpg'), // 배경 이미지
+
+          image: NetworkImage(
+              '$imagesUrl/images/${!isClick ? 'bg-main.jpg' : bgChange(isClick: isClick, currentIcon: weatherData['weather'][0]['icon'])}'), // 배경 이미지
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(49, 232, 232, 232),
+        backgroundColor: const Color.fromARGB(155, 147, 147, 147),
         resizeToAvoidBottomInset: false, // 가상 키보드 오버플로우 제거
-        appBar: const AppBarField(title: '홈'),
+        appBar: const AppBarField(title: '홈', isActions: true),
         body: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Row(
-              children: [
-                // 검색 컨테이너
-                Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: 40,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    margin: const EdgeInsets.symmetric(vertical: 15),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Container(
-                      // 검색 필드
-                      color: Colors.white,
-                      alignment: Alignment.center,
-                      child: DropdownButtonHideUnderline(
-                          child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: const Text(
-                          '검색',
-                          style: TextStyle(color: Colors.black45, fontSize: 18),
-                        ),
-                        items: locations
-                            .map((item) => DropdownMenuItem(
-                                  value: item["location_kr"].toString(),
-                                  child: Text(
-                                    item["location_kr"].toString(),
-                                    style: const TextStyle(
-                                      fontSize: 14,
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 상단 컨테이너
+            SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child:
+                    // 선택 박스 컨테이너
+                    SelectBoxContainerField(
+                  states: states,
+                  countryId: countryId,
+                  stateName: stateName,
+                  countries: countries,
+                  mainSelectOnChangedVal: mainSelectOnChangedVal,
+                  subSelectOnChangedVal: subSelectOnChangedVal,
+                )),
+
+            // 하단 컨테이너
+            SizedBox(
+                width: MediaQuery.of(context).size.width / 1.2,
+                height: MediaQuery.of(context).size.height - 300,
+                child:
+                    // 검색 전
+                    weatherData.isEmpty && errorMessage == ''
+                        ? const EmptyTextField(content: '지역을 검색해 주세요.')
+
+                        // 검색 후 에러 발생
+                        : weatherData.isEmpty && errorMessage != ''
+                            ? EmptyTextField(content: errorMessage)
+
+                            // 검색 후 데이터 호출
+                            : SizedBox(
+                                child: SingleChildScrollView(
+                                    child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // 날씨 정보
+                                    WeatherCard(
+                                      weatherData: weatherData,
+                                      inputText: inputText,
+                                      isBookmark: isBookmark,
+                                      bookmarkIconClick: bookmarkIconClick,
                                     ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedValue,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedValue = value;
-                          });
-                          getLocationName(value);
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 300,
-                          width: 200,
-                        ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: searchController,
-                          searchInnerWidgetHeight: 20,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
-                            ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: searchController,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    getLocationName(searchController.text
-                                        .replaceAll(RegExp('\\s'), ""));
-                                  },
-                                  child: const Icon(Icons.search,
-                                      color: Colors.black54),
-                                ),
-                                hintText: '지역 검색',
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                          searchMatchFn: (item, searchValue) {
-                            return item.value.toString().contains(searchValue);
-                          },
-                        ),
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            searchController.clear();
-                          }
-                        },
-                      )),
-                    )),
-              ],
-            ),
-            weatherData.isEmpty
-                ? // 날씨 정보 없는 경우
-                const Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          '검색하세요.',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  )
-                : // 날씨 정보 있는 경우
-                SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    height: MediaQuery.of(context).size.height - 300,
-                    child:
-                        // 날씨 정보 카드
-                        WeatherCard(
-                            weatherData: weatherData,
-                            searched: searched,
-                            isBookmark: isBookmark,
-                            bookmarkIconClick: bookmarkIconClick))
-          ]),
-        ),
+
+                                    // 옷 컨테이너
+                                    ClothesContainerField(clothes: clothes)
+                                  ],
+                                )),
+                              ))
+          ],
+        )),
       ),
     );
   }

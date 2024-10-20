@@ -14,6 +14,9 @@ class MainInfoField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(value,
-        style: TextStyle(fontSize: fontSize, color: Colors.white));
+        style: TextStyle(
+            fontSize: fontSize,
+            color: Colors.black,
+            fontWeight: FontWeight.w600));
   }
 }

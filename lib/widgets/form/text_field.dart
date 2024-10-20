@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TextFieldInput extends StatelessWidget {
-  // 입력 컨트롤러
-  final TextEditingController textEditingController;
-
   // 변수
+  final TextEditingController textEditingController;
   final TextInputType textInputType;
   final String hintText;
   final dynamic prefixOnTap;

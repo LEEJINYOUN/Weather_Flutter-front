@@ -1,13 +1,13 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:weather_flutter_front/utils/constant.dart';
-import 'package:weather_flutter_front/utils/logPrint.dart';
+import 'package:weather_flutter_front/utilities/env_constant.dart';
 
 class WeatherMethod {
-  var weatherApiKey = EnvData().weatherApiKey();
+  var weatherApiKey = EnvConstant().weatherApiKey();
   // 검색한 날씨 정보
   Future<dynamic> getWeatherInfo(
-    String cityName,
+    String? cityName,
   ) async {
     try {
       var url =
@@ -20,17 +20,18 @@ class WeatherMethod {
       );
 
       var jsonResponse = jsonDecode(response.body);
+      // print(jsonResponse);
 
       if (response.statusCode == 200) {
         // 데이터 값 받기 성공
-        dataPrint(text: ' 날씨 데이터 값 받기 성공');
+        debugPrint(' 날씨 데이터 값 받기 성공' as dynamic);
         return jsonResponse;
       } else {
         // 데이터 값 받기 실패
         throw Exception('불러오는데 실패했습니다');
       }
     } catch (e) {
-      dataPrint(text: e);
+      debugPrint(e as dynamic);
       rethrow;
     }
   }
