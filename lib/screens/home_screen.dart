@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 기타 변수
   Map<String, dynamic> userInfo = {};
+  late List<dynamic> userBookmarkByKr = [];
   Map<String, dynamic> weatherData = {};
   final List<ClothesModel> clothes = [];
   double currentTemp = 0;
@@ -150,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
         isClick = true;
       });
       getClothesTemp();
-      getBookmark();
+      getBookmarkLocation();
     } catch (e) {
       setState(() {
         errorMessage = '등록된 지역이 없습니다.';
@@ -160,22 +161,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // 즐겨찾기 지역 조회
-  void getBookmark() async {
-    try {
-      dynamic result = await BookmarkMethod()
-          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
+  void getBookmarkLocation() async {
+    userBookmarkByKr = userInfo['bookmarks']
+        .where((element) => element['locationKr'] == inputText)
+        .toList();
 
-      if (result != 0) {
-        setState(() {
-          isBookmark = true;
-        });
-      } else {
-        setState(() {
-          isBookmark = false;
-        });
-      }
-    } catch (e) {
-      debugPrint(e as dynamic);
+    if (userBookmarkByKr.length == 1) {
+      setState(() {
+        isBookmark = true;
+      });
+    } else {
+      setState(() {
+        isBookmark = false;
+      });
     }
   }
 

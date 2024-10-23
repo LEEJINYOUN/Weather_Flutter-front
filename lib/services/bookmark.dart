@@ -33,35 +33,7 @@ class BookmarkMethod {
     }
   }
 
-  // 유저별 즐겨찾기 지역 조회
-  Future<dynamic> getBookmarkLocation(
-      {required int userId, required String locationKr}) async {
-    try {
-      var url = '$backendUrl/bookmark/$userId?locationKr=$locationKr';
-      var response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      var jsonResponse = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        // 데이터 값 받기 성공
-        debugPrint('즐겨찾기 지역 조회 성공' as dynamic);
-        return jsonResponse;
-      } else {
-        // 데이터 값 받기 실패
-        throw Exception('불러오는데 실패했습니다');
-      }
-    } catch (e) {
-      debugPrint(e as dynamic);
-      rethrow;
-    }
-  }
-
-  // 즐겨찾기 추가 및 삭제
+  // 즐겨찾기 수정
   Future<dynamic> editBookmark({
     required int userId,
     required String locationKr,
@@ -69,12 +41,12 @@ class BookmarkMethod {
     required int imageNumber,
   }) async {
     try {
-      var url = '$backendUrl/bookmark/update/$userId';
+      var url = '$backendUrl/bookmark/edit/$userId';
 
       var reqBody = {
         'locationKr': locationKr,
         'locationEn': locationEn,
-        'imageNumber': imageNumber,
+        'imageNumber': imageNumber
       };
 
       var response = await http.post(Uri.parse(url),

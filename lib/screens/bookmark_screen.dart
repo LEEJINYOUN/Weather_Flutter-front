@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weather_flutter_front/models/clothes_model.dart';
-
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/weather.dart';
@@ -9,7 +8,6 @@ import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
 import 'package:weather_flutter_front/utilities/env_constant.dart';
 import 'package:weather_flutter_front/utilities/user_info.dart';
 import 'package:weather_flutter_front/widgets/card/weather_card.dart';
-
 import 'package:weather_flutter_front/widgets/container/bookmark_container_field.dart';
 import 'package:weather_flutter_front/widgets/container/clothes_container_field.dart';
 import 'package:weather_flutter_front/widgets/header/app_bar_field.dart';
@@ -33,6 +31,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
 
   // 기타 변수
   Map<String, dynamic> userInfo = {};
+  late List<dynamic> userBookmarkByKr = [];
   dynamic bookmarks;
   int bookmarkLen = 0;
   Map<String, dynamic> weatherData = {};
@@ -97,17 +96,19 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   // 즐겨찾기 지역 조회
-  void getBookmark() async {
-    try {
-      dynamic result = await BookmarkMethod()
-          .getBookmarkLocation(userId: userInfo['id'], locationKr: inputText);
-      if (result != 0) {
-        setState(() {
-          isBookmark = true;
-        });
-      }
-    } catch (e) {
-      debugPrint(e as dynamic);
+  void getBookmarkLocation() async {
+    userBookmarkByKr = userInfo['bookmarks']
+        .where((element) => element['locationKr'] == inputText)
+        .toList();
+
+    if (userBookmarkByKr.length == 1) {
+      setState(() {
+        isBookmark = true;
+      });
+    } else {
+      setState(() {
+        isBookmark = false;
+      });
     }
   }
 
@@ -118,7 +119,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
       outputText = data['locationEn'];
       outputNumber = data['imageNumber'];
     });
-    getBookmark();
+    getBookmarkLocation();
     getWeather(outputText);
   }
 

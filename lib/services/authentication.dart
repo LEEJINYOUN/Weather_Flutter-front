@@ -118,6 +118,7 @@ class AuthMethod {
       var jsonResponse = jsonDecode(response.body);
 
       await storage.deleteAll();
+
       return jsonResponse;
     } catch (e) {
       debugPrint(e as dynamic);
