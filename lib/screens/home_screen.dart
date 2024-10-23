@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:weather_flutter_front/models/clothes_model.dart';
-
 import 'package:weather_flutter_front/services/bookmark.dart';
 import 'package:weather_flutter_front/services/clothes.dart';
 import 'package:weather_flutter_front/services/country.dart';
-import 'package:weather_flutter_front/services/location.dart';
 import 'package:weather_flutter_front/services/weather.dart';
 import 'package:weather_flutter_front/utilities/bg_change.dart';
 import 'package:weather_flutter_front/utilities/celsius_conversion.dart';
@@ -31,12 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
   String imagesUrl = EnvConstant().imageFrontUrl();
 
   // 나라, 지역 선택관련 변수
-  late List<dynamic> states = [];
-  dynamic countryId;
+  dynamic countryName;
   dynamic stateName;
   bool countriesSelect = false;
   final List<dynamic> countries = [];
-  final List<dynamic> locations = [];
+  late List<dynamic> locationListByCountry = [];
+  late List<dynamic> states = [];
 
   // 구글 번역 선언
   final translator = GoogleTranslator();
@@ -63,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     userData();
     getAllCountry();
-    getAllLocation();
   }
 
   // 컨트롤러 객체 제거 시 메모리 해제
@@ -97,33 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 나라별 모든 지역 조회
-  void getAllLocation() async {
-    try {
-      dynamic result = await LocationMethod().getAllLocation();
-
-      setState(() {
-        locations.clear();
-        result.forEach((element) {
-          locations.add(element);
-        });
-      });
-    } catch (e) {
-      debugPrint(e as dynamic);
-      rethrow;
-    }
-  }
-
   // 선택 대분류 값 변경
   void mainSelectOnChangedVal(onChangedVal) {
     setState(() {
       countriesSelect = true;
     });
-    countryId = onChangedVal;
 
-    states = locations
-        .where((stateItem) => stateItem['countryId'].toString() == onChangedVal)
-        .toList();
+    countryName = onChangedVal;
+
+    locationListByCountry =
+        countries.where((element) => element['name'] == countryName).toList();
+
+    states = locationListByCountry[0]['locations'];
+
     stateName = '지역 선택';
   }
 
@@ -271,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // 선택 박스 컨테이너
                     SelectBoxContainerField(
                   states: states,
-                  countryId: countryId,
+                  countryName: countryName,
                   stateName: stateName,
                   countries: countries,
                   mainSelectOnChangedVal: mainSelectOnChangedVal,

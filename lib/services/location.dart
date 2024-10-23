@@ -7,9 +7,10 @@ class LocationMethod {
   var backendUrl = EnvConstant().backendApi();
 
   // 나라별 모든 지역 조회
-  Future<dynamic> getAllLocation() async {
+  Future<dynamic> getAllLocation(dynamic countryId) async {
     try {
-      var url = '$backendUrl/location/all';
+      int id = int.parse(countryId);
+      var url = '$backendUrl/location/$id';
       var response = await http.get(
         Uri.parse(url),
         headers: {

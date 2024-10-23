@@ -3,19 +3,19 @@ import 'package:snippet_coder_utils/FormHelper.dart';
 
 class SelectBoxContainerField extends StatelessWidget {
   // 변수
-  final List<dynamic> states;
-  final dynamic countryId;
+  final dynamic countryName;
   final dynamic stateName;
   final List<dynamic> countries;
+  final List<dynamic> states;
   final dynamic mainSelectOnChangedVal;
   final dynamic subSelectOnChangedVal;
 
   const SelectBoxContainerField({
     super.key,
-    required this.states,
-    required this.countryId,
+    required this.countryName,
     required this.stateName,
     required this.countries,
+    required this.states,
     required this.mainSelectOnChangedVal,
     required this.subSelectOnChangedVal,
   });
@@ -34,7 +34,7 @@ class SelectBoxContainerField extends StatelessWidget {
             child: FormHelper.dropDownWidget(
                 context,
                 "나라 선택",
-                countryId,
+                countryName,
                 countries,
                 (onChangedVal) => mainSelectOnChangedVal(onChangedVal),
                 (onValidateVal) {
@@ -43,6 +43,8 @@ class SelectBoxContainerField extends StatelessWidget {
               }
               return null;
             },
+                optionValue: 'name',
+                optionLabel: 'name',
                 borderColor: Colors.grey,
                 borderFocusColor: Colors.red,
                 borderRadius: 10,
