@@ -17,7 +17,12 @@ class AuthMethod {
   }) async {
     try {
       var url = '$backendUrl/auth/register';
-      var reqBody = {'email': email, 'name': name, 'password': password};
+      var reqBody = {
+        'email': email,
+        'name': name,
+        'role': 'user',
+        'password': password
+      };
 
       var response = await http.post(Uri.parse(url),
           headers: {
