@@ -26,7 +26,7 @@ class _LoginStatusState extends State<LoginStatus> {
 
   // 로그인 상태 확인
   Future<void> isLogged() async {
-    if (await storage.read(key: "token") != null) {
+    if (await storage.read(key: "accessToken") != null) {
       setState(() {
         logLoginStatusCheck = true;
       });

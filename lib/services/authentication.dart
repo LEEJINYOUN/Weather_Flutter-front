@@ -54,7 +54,9 @@ class AuthMethod {
           body: jsonEncode(reqBody));
 
       var jsonResponse = jsonDecode(response.body);
-      var token = jsonResponse['token'];
+
+      var accessToken = jsonResponse['result']['accessToken'];
+      var refreshToken = jsonResponse['result']['refreshToken'];
 
       Map<String, dynamic> userData = {
         "data": jsonResponse,
@@ -64,11 +66,13 @@ class AuthMethod {
       if (response.statusCode == 201) {
         // 로그인 성공
 
-        if (token != null) {
+        if (accessToken != null) {
           await storage.deleteAll();
-          await storage.write(key: 'token', value: token);
+          await storage.write(key: 'accessToken', value: accessToken);
+          await storage.write(key: 'refreshToken', value: refreshToken);
         } else {
-          token = null;
+          accessToken = null;
+          refreshToken = null;
           await storage.deleteAll();
         }
 
@@ -84,23 +88,42 @@ class AuthMethod {
   }
 
   // 유저 정보 가져오기
-  Future<dynamic> getUser({required dynamic token}) async {
+  Future<dynamic> getUser(tokens) async {
     try {
-      var url = '$backendUrl/auth/getUser';
-      var reqBody = {'token': token};
+      bool isGetData;
+      isGetData = false;
+      var response;
+      var jsonResponse;
 
-      var response = await http.post(Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(reqBody));
+      if (isGetData == false) {
+        response = await getToken(tokens['accessToken']);
+        jsonResponse = jsonDecode(response);
+      }
+      isGetData = true;
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isGetData == true && jsonResponse['message'] == '토큰 만료') {
+        response = await getToken(tokens['refreshToken']);
+        jsonResponse = jsonDecode(response);
+      }
+      isGetData = false;
 
       return jsonResponse;
     } catch (e) {
       debugPrint(e as dynamic);
     }
+  }
+
+  // 토큰 정보 가져오기
+  dynamic getToken(token) async {
+    var reqBody = {'accessToken': token};
+    var url = '$backendUrl/auth/getUser';
+    var response = await http.post(Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer $token',
+        },
+        body: jsonEncode(reqBody));
+    return response.body;
   }
 
   // 로그아웃

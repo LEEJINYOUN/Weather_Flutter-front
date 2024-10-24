@@ -7,8 +7,13 @@ Future<dynamic> getUserInfo() async {
   const storage = FlutterSecureStorage();
 
   try {
-    var token = await storage.read(key: "token");
-    var getUserInfo = await AuthMethod().getUser(token: token);
+    var accessToken = await storage.read(key: "accessToken");
+    var refreshToken = await storage.read(key: "refreshToken");
+    var tokens = {
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+    };
+    var getUserInfo = await AuthMethod().getUser(tokens);
     return getUserInfo;
   } catch (e) {
     debugPrint(e as dynamic);
